@@ -1,7 +1,7 @@
 🎮 Morpion Multiclass Edition
 📝 Description
 
-Bienvenue dans le Morpion 4 Joueurs, la version ultime du jeu classique !
+Bienvenue dans le Morpion, la version ultime du jeu classique !
 Chaque joueur choisit une classe unique avec des pouvoirs spéciaux. Formez votre stratégie, utilisez vos capacités et soyez le premier à dominer la grille !
 
 👥 Comment jouer
@@ -29,7 +29,7 @@ Classe	Pouvoir	Cooldown / Effet
 
 🕹️ Fonctionnement du jeu
 
-Grille de jeu : La grille est adaptée à 4 joueurs et affiche chaque symbole distinct.
+Grille de jeu : La grille est adaptée de 2 à 4 joueurs et affiche chaque symbole distinct.
 
 Tour par tour : Les joueurs jouent à tour de rôle et peuvent utiliser leur pouvoir spécial quand il est disponible.
 
@@ -39,7 +39,6 @@ Fin de partie :
 
 Un joueur aligne une ligne, colonne ou diagonale → Victoire 🏆
 
-La grille est pleine et aucun gagnant → Égalité 🤝
 
 🚀 Instructions
 
