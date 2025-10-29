@@ -1,7 +1,7 @@
 // Configuration
 const SERVER_URL = window.location.origin;
 
-// Éléments DOM
+const pseudoInput = document.getElementById('pseudo');
 const gameIdInput = document.getElementById('gameId');
 const joinBtn = document.getElementById('joinBtn');
 const errorMsg = document.getElementById('errorMsg');

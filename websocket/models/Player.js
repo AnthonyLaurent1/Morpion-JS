@@ -4,16 +4,18 @@
 // ============================================================================
 
 export default class Player {
-  constructor(playerId, color, game) {
+  constructor(playerId, color, game, pseudo = '') {
     this.playerId = playerId;
     this.color = color;
     this.game = game;
     this.className = 'base';
+    this.pseudo = pseudo;
     
     this.actionPoints = 0;
     this.abilityCharges = 0;
     this.abilityMaxCharges = 3;
     this.abilityUsedThisWave = false;
+    this.hasSkipped = false;
     
     this.timers = [];
   }
@@ -23,14 +25,15 @@ export default class Player {
     this.actionPoints += pointsToAdd;
     this.abilityCharges = Math.min(this.abilityCharges + 1, this.abilityMaxCharges);
     this.abilityUsedThisWave = false;
+    this.hasSkipped = false;
   }
 
   canPlace() {
-    return this.actionPoints >= 1;
+    return this.actionPoints >= 1 && !this.hasSkipped;
   }
 
   canDestroy() {
-    return this.actionPoints >= 1;
+    return this.actionPoints >= 1 && !this.hasSkipped;
   }
 
   canUseAbility() {
