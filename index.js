@@ -15,67 +15,72 @@ const wins = [
 
 function render() {
   const cells = Array.from(document.querySelectorAll('.cell'));
-  cells.forEach((cell,i)=>{
+  cells.forEach((cell, i) => {
     cell.textContent = board[i] ?? '';
-    cell.classList.toggle('disabled',!running || board[i]);
-    cell.classList.remove('win');
+    cell.classList.toggle('disabled', !running || board[i]);
   });
-  playerEl.textContent = current;
+
+  // Met à jour le joueur affiché en bas
+  if (running) {
+    statusEl.textContent = 'Tour de : ';
+    const playerSpan = document.createElement('strong');
+    playerSpan.id = 'player';
+    playerSpan.textContent = current;
+    playerSpan.style.color = current === 'X' ? '#e74c3c' : '#3498db'; // Rouge pour X, bleu pour O
+    statusEl.appendChild(playerSpan);
+  }
 }
 
-function checkWin(){
-  for(const combo of wins){
-    const [a,b,c] = combo;
-    if(board[a] && board[a]===board[b] && board[a]===board[c]){
-      return {winner:board[a], combo};
+function checkWin() {
+  for (const combo of wins) {
+    const [a, b, c] = combo;
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      return { winner: board[a], combo };
     }
   }
-  if(board.every(Boolean)) return {winner:null, tie:true};
+  if (board.every(Boolean)) return { winner: null, tie: true };
   return null;
 }
 
-function handleClick(e){
+function handleClick(e) {
   const cell = e.target.closest('.cell');
-  if(!cell || !running) return;
+  if (!cell || !running) return;
+
   const idx = Number(cell.dataset.index);
-  if(board[idx]) return;
+  if (board[idx]) return;
 
   board[idx] = current;
   const result = checkWin();
 
-  if(result){
-    running=false;
-    if(result.winner){
-      // popup
-      alert(`🎉 GG ! Le joueur ${result.winner} a gagné !`);
-      result.combo.forEach(i=>{
-        const c=document.querySelector(`.cell[data-index='${i}']`);
-        if(c) c.classList.add('win');
+  if (result) {
+    running = false;
+
+    if (result.winner) {
+      statusEl.textContent = `🎉 Le joueur ${result.winner} a gagné !`;
+      playerEl.textContent = '';
+      result.combo.forEach(i => {
+        document.querySelector(`.cell[data-index='${i}']`).classList.add('win');
       });
-      statusEl.textContent=`Le joueur ${result.winner} a gagné !`;
-    } else if(result.tie){
-      alert('Match nul ! 🤝');
-      statusEl.textContent='Match nul !';
+    } else if (result.tie) {
+      statusEl.textContent = '🤝 Match nul !';
+      playerEl.textContent = '';
     }
   } else {
-    current = current==='X'?'O':'X';
-    statusEl.textContent='Tour de : ';
-    playerEl.textContent=current;
+    current = current === 'X' ? 'O' : 'X';
   }
+
   render();
 }
 
-function reset(){
+function reset() {
   board.fill(null);
-  current='X';
-  running=true;
-  statusEl.textContent='Tour de : ';
-  playerEl.textContent=current;
-  document.querySelectorAll('.cell.win').forEach(c=>c.classList.remove('win'));
+  current = 'X';
+  running = true;
+  document.querySelectorAll('.cell').forEach(c => c.classList.remove('win'));
   render();
 }
 
-boardEl.addEventListener('click',handleClick);
-restartBtn.addEventListener('click',reset);
+boardEl.addEventListener('click', handleClick);
+restartBtn.addEventListener('click', reset);
 
 render();
