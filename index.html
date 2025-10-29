@@ -7,6 +7,30 @@
     <title>Morpion</title>
   </head>
   <body>
+    <div id="start-screen" class="screen">
+      <h1>Jeu du Morpion</h1>
+      <button id="start-button">Commencer la partie</button>
+    </div>
+
+    <div id="game-screen" class="screen hidden">
+      <div class="game-info">
+        <div id="player-turn">Tour du Joueur : X</div>
+        <button id="rage-quit">Abandonner</button>
+      </div>
+      
+      <div class="grid">
+        <div class="cell" data-index="0"></div>
+        <div class="cell" data-index="1"></div>
+        <div class="cell" data-index="2"></div>
+        <div class="cell" data-index="3"></div>
+        <div class="cell" data-index="4"></div>
+        <div class="cell" data-index="5"></div>
+        <div class="cell" data-index="6"></div>
+        <div class="cell" data-index="7"></div>
+        <div class="cell" data-index="8"></div>
+      </div>
+    </div>
+
     <script src="index.js"></script>
   </body>
 </html>
