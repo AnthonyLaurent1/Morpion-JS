@@ -1,36 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="styles.css" />
-    <title>Morpion</title>
-  </head>
-  <body>
-    <div id="start-screen" class="screen">
-      <h1>Jeu du Morpion</h1>
-      <button id="start-button">Commencer la partie</button>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morpion Fun</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Morpion Fun</h1>
+    <div id="board" class="board">
+      <div class="cell" data-index="0"></div>
+      <div class="cell" data-index="1"></div>
+      <div class="cell" data-index="2"></div>
+      <div class="cell" data-index="3"></div>
+      <div class="cell" data-index="4"></div>
+      <div class="cell" data-index="5"></div>
+      <div class="cell" data-index="6"></div>
+      <div class="cell" data-index="7"></div>
+      <div class="cell" data-index="8"></div>
     </div>
-
-    <div id="game-screen" class="screen hidden">
-      <div class="game-info">
-        <div id="player-turn">Tour du Joueur : X</div>
-        <button id="rage-quit">Abandonner</button>
-      </div>
-      
-      <div class="grid">
-        <div class="cell" data-index="0"></div>
-        <div class="cell" data-index="1"></div>
-        <div class="cell" data-index="2"></div>
-        <div class="cell" data-index="3"></div>
-        <div class="cell" data-index="4"></div>
-        <div class="cell" data-index="5"></div>
-        <div class="cell" data-index="6"></div>
-        <div class="cell" data-index="7"></div>
-        <div class="cell" data-index="8"></div>
-      </div>
+    <div class="info">
+      <p id="status">Tour de : <strong id="player">X</strong></p>
+      <button id="restart">Recommencer</button>
     </div>
-
-    <script src="index.js"></script>
-  </body>
+  </main>
+</body>
+<script src="index.js"></script>
 </html>
