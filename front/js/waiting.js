@@ -1,0 +1,174 @@
+// Configuration
+// Socket.IO utilise http/https, pas ws/wss
+const SERVER_URL = window.location.origin;
+
+// Vérifier si les données sont présentes
+const playerClass = sessionStorage.getItem('playerClass');
+const gameId = sessionStorage.getItem('gameId');
+
+if (!playerClass) {
+  window.location.href = './index.html';
+}
+
+// Configuration de la connexion Socket.IO
+const socket = io(SERVER_URL, {
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
+  timeout: 20000,
+  transports: ['websocket', 'polling']
+});
+
+// Gestion des erreurs de connexion
+socket.on('connect_error', (error) => {
+  console.error('Erreur de connexion:', error);
+  alert(`Impossible de se connecter au serveur: ${error.message}. Vérifiez que le serveur est en cours d'exécution et que vous êtes connecté au bon réseau.`);
+  window.location.href = './index.html';
+});
+
+socket.on('connect_timeout', () => {
+  console.error('Délai de connexion dépassé');
+  alert('Le serveur ne répond pas. Vérifiez votre connexion réseau.');
+});
+
+// Éléments DOM
+const gameCodeEl = document.getElementById('gameCode');
+const playerCountEl = document.getElementById('playerCount');
+const playersListEl = document.getElementById('playersList');
+const leaveBtn = document.getElementById('leaveBtn');
+
+// État local
+let currentGameId = null;
+let myPlayerId = null;
+
+// Classes avec leurs icônes
+const classIcons = {
+  'bombman': '💣',
+  'parieur': '🎲',
+  'bombwoman': '💥',
+  'fast': '⚡',
+  'solide': '🛡️',
+  'roulette': '🎰',
+  'shuffle': '🔀',
+  'voyageur': '⏰'
+};
+
+const classNames = {
+  'bombman': 'Bombman',
+  'parieur': 'Le Parieur',
+  'bombwoman': 'Bombwoman',
+  'fast': 'Le Fast',
+  'solide': 'Le Solide',
+  'roulette': 'La Roulette',
+  'shuffle': 'Le Shuffle',
+  'voyageur': 'Le Voyageur'
+};
+
+// Rejoindre la partie
+socket.emit('join_game', {
+  gameId: gameId ? parseInt(gameId) : null,
+  playerClass: playerClass
+});
+
+// Succès de la connexion
+socket.on('join_success', (data) => {
+  currentGameId = data.gameId;
+  myPlayerId = data.playerId;
+  
+  // Stocker le gameId dans sessionStorage pour la reconnexion
+  sessionStorage.setItem('gameId', data.gameId);
+  
+  gameCodeEl.textContent = data.gameId;
+  
+  console.log('Connexion réussie:', data);
+});
+
+// Erreur de connexion
+socket.on('join_error', (data) => {
+  alert(data.message);
+  window.location.href = './index.html';
+});
+
+// Mise à jour de l'état du jeu
+socket.on('game_state_update', (state) => {
+  updatePlayersList(state.players);
+});
+
+// Partie démarrée
+socket.on('game_started', (data) => {
+  console.log('La partie commence!');
+  
+  // Stocker les informations de la partie
+  sessionStorage.setItem('gameStarted', 'true');
+  
+  // IMPORTANT: Ne pas déconnecter le socket, il sera réutilisé dans game.html
+  // On stocke l'ID du socket pour debug
+  sessionStorage.setItem('socketId', socket.id);
+  console.log('Redirection vers game.html avec socket:', socket.id);
+  
+  // Rediriger vers la page de jeu
+  window.location.href = './game.html';
+});
+
+// Joueur parti
+socket.on('player_left', (data) => {
+  console.log('Joueur parti:', data.playerId);
+});
+
+// Mise à jour de la liste des joueurs
+function updatePlayersList(players) {
+  playerCountEl.textContent = players.length;
+  
+  playersListEl.innerHTML = '';
+  
+  players.forEach(player => {
+    const isMe = player.id === myPlayerId;
+    
+    const card = document.createElement('div');
+    card.className = 'player-card' + (isMe ? ' you' : '');
+    
+    const colorDiv = document.createElement('div');
+    colorDiv.className = 'player-color';
+    colorDiv.style.backgroundColor = player.color;
+    
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'player-info';
+    
+    const nameP = document.createElement('p');
+    nameP.className = 'player-name';
+    nameP.textContent = isMe ? 'Vous' : `Joueur ${players.indexOf(player) + 1}`;
+    
+    const classP = document.createElement('p');
+    classP.className = 'player-class';
+    classP.textContent = `${classIcons[player.class]} ${classNames[player.class]}`;
+    
+    infoDiv.appendChild(nameP);
+    infoDiv.appendChild(classP);
+    
+    card.appendChild(colorDiv);
+    card.appendChild(infoDiv);
+    
+    if (isMe) {
+      const badge = document.createElement('span');
+      badge.className = 'player-badge';
+      badge.textContent = 'VOUS';
+      card.appendChild(badge);
+    }
+    
+    playersListEl.appendChild(card);
+  });
+}
+
+// Quitter la partie
+leaveBtn.addEventListener('click', () => {
+  socket.disconnect();
+  sessionStorage.clear();
+  window.location.href = './index.html';
+});
+
+// Gestion de la fermeture de la page
+window.addEventListener('beforeunload', () => {
+  if (!sessionStorage.getItem('gameStarted')) {
+    socket.disconnect();
+  }
+});

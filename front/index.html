@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morpion 4 Joueurs - Accueil</title>
+    <link rel="stylesheet" href="./style/home.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Morpion 4 Joueurs</h1>
+    <p class="subtitle">Choisissez votre classe et rejoignez une partie</p>
+    
+    <div class="menu">
+      <div class="input-group">
+        <label for="gameId">Code de partie (optionnel)</label>
+        <input type="text" id="gameId" placeholder="Laisser vide pour créer une nouvelle partie">
+      </div>
+
+      <div class="class-selection">
+        <h2>Choisissez votre classe</h2>
+        <div class="classes-grid">
+          <div class="class-card" data-class="bombman">
+            <div class="class-icon">💣</div>
+            <h3>Bombman</h3>
+            <p>Détruit en croix</p>
+            <span class="cooldown">CD: 10s</span>
+          </div>
+
+          <div class="class-card" data-class="parieur">
+            <div class="class-icon">🎲</div>
+            <h3>Le Parieur</h3>
+            <p>Détruit 3x3, remplace par 6 blocs aléatoires</p>
+            <span class="cooldown">CD: 10s</span>
+          </div>
+
+          <div class="class-card" data-class="bombwoman">
+            <div class="class-icon">💥</div>
+            <h3>Bombwoman</h3>
+            <p>Détruit ligne/colonne, bloque 6s</p>
+            <span class="cooldown">CD: 10s</span>
+          </div>
+
+          <div class="class-card" data-class="fast">
+            <div class="class-icon">⚡</div>
+            <h3>Le Fast</h3>
+            <p>Blocs à 0 PV, cooldown ÷2</p>
+            <span class="cooldown">Passif</span>
+          </div>
+
+          <div class="class-card" data-class="solide">
+            <div class="class-icon">🛡️</div>
+            <h3>Le Solide</h3>
+            <p>Blocs 2 PV, cooldown x2</p>
+            <span class="cooldown">Passif</span>
+          </div>
+
+          <div class="class-card" data-class="roulette">
+            <div class="class-icon">🎰</div>
+            <h3>La Roulette</h3>
+            <p>Pose 2 blocs aléatoires sur une ligne</p>
+            <span class="cooldown">CD: 10s</span>
+          </div>
+
+          <div class="class-card" data-class="shuffle">
+            <div class="class-icon">🔀</div>
+            <h3>Le Shuffle</h3>
+            <p>Mélange toute la grille</p>
+            <span class="cooldown">CD: 15s</span>
+          </div>
+
+          <div class="class-card" data-class="aleatoire">
+            <div class="class-icon">🎲</div>
+            <h3>L'Aléatoire</h3>
+            <p>Pouvoir aléatoire</p>
+            <span class="cooldown">3 vagues</span>
+          </div>
+        </div>
+      </div>
+
+      <button id="joinBtn" class="join-btn" disabled>Rejoindre la partie</button>
+      <p class="error-msg" id="errorMsg"></p>
+    </div>
+  </main>
+
+  <script src="./js/home.js"></script>
+</body>
+</html>

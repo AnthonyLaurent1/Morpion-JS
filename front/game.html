@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morpion 4 Joueurs</title>
+  <link rel="stylesheet" href="./style/game.css">
+</head>
+<body>
+  <main class="container">
+    <div class="header">
+      <h1>Morpion 4 Joueurs</h1>
+      <div class="wave-info">
+        <p>Vague: <strong id="waveNumber">1</strong></p>
+        <p>Temps restant: <strong id="waveTimer">60</strong>s</p>
+      </div>
+    </div>
+
+    <div class="game-content">
+      <!-- Barre latérale gauche: joueurs -->
+      <aside class="players-sidebar">
+        <h2>Joueurs</h2>
+        <div id="playersList" class="players-list"></div>
+      </aside>
+
+      <!-- Grille de jeu -->
+      <div class="board-container">
+        <div class="action-mode">
+          <button id="placeModeBtn" class="mode-btn active">
+            <span class="icon">➕</span>
+            Placer (1 PA)
+            <span class="cooldown-indicator" id="placeCooldown"></span>
+          </button>
+          <button id="destroyModeBtn" class="mode-btn">
+            <span class="icon">❌</span>
+            Détruire (1 PA)
+            <span class="cooldown-indicator" id="destroyCooldown"></span>
+          </button>
+          <button id="abilityModeBtn" class="mode-btn">
+            <span class="icon">⚡</span>
+            Pouvoir
+            <span class="cooldown-indicator" id="abilityCooldown"></span>
+          </button>
+          <button id="skipTurnBtn" class="mode-btn skip-btn">
+            <span class="icon">⏭️</span>
+            Passer son tour
+          </button>
+        </div>
+
+        <div class="board-wrapper">
+          <div id="board" class="board"></div>
+        </div>
+
+        <div class="status-bar">
+          <p id="statusMessage">En attente...</p>
+          <p id="actionPointsDisplay" class="action-points">PA: 0</p>
+        </div>
+      </div>
+
+      <!-- Barre latérale droite: infos -->
+      <aside class="info-sidebar">
+        <h2>Votre classe</h2>
+        <div id="classInfo" class="class-info"></div>
+
+        <h2>Instructions</h2>
+        <div class="instructions">
+          <p><strong>But:</strong> Alignez 3 blocs de votre couleur</p>
+          <p><strong>Actions de base:</strong></p>
+          <ul>
+            <li>Placer un bloc (2.5s CD)</li>
+            <li>Détruire un bloc (2.5s CD)</li>
+          </ul>
+          <p><strong>Astuce:</strong> Utilisez votre pouvoir spécial stratégiquement!</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="gameOverModal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="gameOverTitle">Partie terminée</h2>
+      <p id="gameOverMessage"></p>
+      <div id="winnerInfo"></div>
+      <button id="backToMenuBtn" class="btn-primary">Retour au menu</button>
+    </div>
+  </div>
+
+  <div id="waveOverlay" class="wave-overlay hidden">
+    <h1 id="waveOverlayText">Vague 1</h1>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+  <script src="./js/game.js"></script>
+</body>
+</html>
