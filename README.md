@@ -1,59 +1,64 @@
-🎮 Morpion (Tic-Tac-Toe)
+🎮 Morpion Multiclass Edition
 📝 Description
 
-Le Morpion est un jeu de plateau classique pour 2 joueurs. Chaque joueur choisit un symbole : ❌ X ou ⭕ O.
-Le but : aligner 3 symboles horizontalement, verticalement ou en diagonale avant l’adversaire.
+Bienvenue dans le Morpion 4 Joueurs, la version ultime du jeu classique !
+Chaque joueur choisit une classe unique avec des pouvoirs spéciaux. Formez votre stratégie, utilisez vos capacités et soyez le premier à dominer la grille !
 
-🎲 Règles du jeu
+👥 Comment jouer
 
-✅ Le jeu se joue sur une grille 3x3.
+Choisissez votre classe et entrez votre pseudo (optionnel).
 
-🔄 Les joueurs jouent à tour de rôle :
+Si vous laissez vide → pseudo aléatoire.
 
-Joueur 1 → ❌
+Entrez un code de partie pour rejoindre une partie existante ou laissez vide pour créer une nouvelle partie.
 
-Joueur 2 → ⭕
+Jouez à tour de rôle jusqu’à ce qu’un joueur gagne ou que la grille soit remplie.
 
-🚫 Chaque case ne peut contenir qu’un seul symbole.
+🧙 Classes et capacités
+Classe	Pouvoir	Cooldown / Effet
+💣 Bombman	Détruit en croix	105s
+🎲 Le Parieur	Détruit 3x3, remplace par 6 blocs aléatoires	105s
+💣 Bombwoman	Détruit ligne/colonne, bloque 6s	105s
+⚡ Le Fast	Tous les blocs passent à 0 PV, cooldown réduit +2	Passif
+🛡️ Le Solide	Blocs à 2 PV, cooldown x2	Passif
+🎰 La Roulette	Pose 2 blocs aléatoires sur une ligne	10s
+🔀 Le Shuffle	Mélange toute la grille	155s
+🎲 L'Aléatoire	Pouvoir aléatoire	3 vagues
 
-🏆 Le jeu se termine quand :
+💡 Les cooldowns (CD) indiquent le temps à attendre avant de réutiliser le pouvoir.
 
-Un joueur aligne 3 symboles → Victoire
+🕹️ Fonctionnement du jeu
 
-Toutes les cases sont remplies sans alignement → Égalité
+Grille de jeu : La grille est adaptée à 4 joueurs et affiche chaque symbole distinct.
 
-💻 Fonctionnement du programme
+Tour par tour : Les joueurs jouent à tour de rôle et peuvent utiliser leur pouvoir spécial quand il est disponible.
 
-Le morpion est développé avec HTML, CSS et JavaScript :
+Objectif : Aligner vos symboles ou utiliser vos capacités pour contrer vos adversaires.
 
-1️⃣ Grille de jeu
+Fin de partie :
 
-Une grille 3x3 est affichée sur l’écran.
+Un joueur aligne une ligne, colonne ou diagonale → Victoire 🏆
 
-Chaque case est cliquable et reçoit le symbole du joueur actif.
+La grille est pleine et aucun gagnant → Égalité 🤝
 
-2️⃣ Tour par tour
+🚀 Instructions
 
-Variable currentPlayer → détermine le joueur en cours.
+Ouvrez index.html dans un navigateur.
 
-Après chaque coup : X → O → X → ...
+Choisissez votre classe et entrez votre pseudo.
 
-3️⃣ Détection de victoire
+Rejoignez ou créez une partie.
 
-Après chaque coup, le programme vérifie :
+Jouez en utilisant vos pouvoirs spéciaux stratégiquement.
 
-🟰 Horizontalement
+Cliquez sur Recommencer pour une nouvelle partie.
 
-🟰 Verticalement
+✨ Astuces stratégiques
 
-🟰 Diagonalement
+💣 Bombman / Bombwoman → idéal pour bloquer plusieurs adversaires à la fois.
 
-Si un joueur gagne → message "Joueur ❌/⭕ gagne !"
+🎲 Le Parieur → parfait pour un changement massif de la grille.
 
-4️⃣ Match nul
+⚡ Le Fast → à utiliser pour déséquilibrer les blocs rapidement.
 
-Toutes les cases remplies + pas de gagnant → Égalité.
-
-5️⃣ Redémarrage
-
-🔄 Bouton Recommencer → réinitialise la grille pour une nouvelle partie.
+🔀 Le Shuffle → retournez la grille à votre avantage ou pour semer le chaos !
