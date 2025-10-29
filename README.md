@@ -3,7 +3,7 @@
 Le Morpion est un jeu de plateau classique pour 2 joueurs. Chaque joueur choisit un symbole : ❌ X ou ⭕ O.
 Le but : aligner 3 symboles horizontalement, verticalement ou en diagonale avant l’adversaire.
 
-🎲 Règles du jeu
+🎲 Règles du jeu0
 ✅ Le jeu se joue sur une grille 3x3.
 🔄 Les joueurs jouent à tour de rôle :
 Joueur 1 → ❌
