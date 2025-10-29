@@ -50,10 +50,9 @@ const gameManager = new GameManager(io);
 io.on('connection', (socket) => {
   console.log(`Joueur connecté: ${socket.id}`);
 
-  // Créer ou rejoindre une partie
   socket.on('join_game', (data) => {
-    const { gameId, playerClass } = data;
-    gameManager.handleJoinGame(socket, gameId, playerClass);
+    const { gameId, playerClass, pseudo } = data;
+    gameManager.handleJoinGame(socket, gameId, playerClass, pseudo);
   });
 
   // Action de placement de bloc

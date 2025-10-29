@@ -23,30 +23,29 @@ export default class GameManager {
   }
 
   // Rejoindre ou créer une partie
-  handleJoinGame(socket, gameId, playerClass) {
-    let game;
+  handleJoinGame(socket, gameId, playerClass, pseudo = '') {
+    let game = null;
 
-    if (gameId && this.games.has(gameId)) {
+    if (gameId) {
       game = this.games.get(gameId);
       
-      // Vérifier si le joueur essaie de se reconnecter avec la même classe
+      if (!game) {
+        socket.emit('join_error', { message: 'Partie introuvable' });
+        return;
+      }
+
       const existingPlayer = game.players.find(p => p.className === playerClass);
-      
-      if (existingPlayer && game.started) {
-        // Reconnexion : mettre à jour le socket ID du joueur
-        console.log(`Reconnexion du joueur ${socket.id} (anciennement ${existingPlayer.playerId}) à la partie ${gameId}`);
+      if (existingPlayer) {
+        console.log(`Reconnexion détectée pour ${socket.id} (anciennement ${existingPlayer.playerId})`);
         
-        // Annuler le timer de déconnexion si il existe
-        const oldSocketId = existingPlayer.playerId;
-        if (this.disconnectTimers.has(oldSocketId)) {
-          clearTimeout(this.disconnectTimers.get(oldSocketId));
-          this.disconnectTimers.delete(oldSocketId);
-          this.socketToGame.delete(oldSocketId);
-          console.log(`Timer de déconnexion annulé pour ${oldSocketId}`);
+        if (this.disconnectTimers.has(existingPlayer.playerId)) {
+          clearTimeout(this.disconnectTimers.get(existingPlayer.playerId));
+          this.disconnectTimers.delete(existingPlayer.playerId);
+          console.log(`Timer de déconnexion annulé pour ${existingPlayer.playerId}`);
         }
         
+        this.socketToGame.delete(existingPlayer.playerId);
         existingPlayer.playerId = socket.id;
-        
         this.socketToGame.set(socket.id, game.gameId);
         socket.join(`game_${game.gameId}`);
         
@@ -55,49 +54,46 @@ export default class GameManager {
           playerId: socket.id,
           playerColor: existingPlayer.color,
           playerClass: playerClass,
+          pseudo: existingPlayer.pseudo,
           reconnected: true
         });
         
-        // Envoyer l'état actuel de la partie
         socket.emit('game_state_update', game.getGameState());
         return;
       }
       
-      // Vérifier si la partie est pleine
       if (game.players.length >= 4) {
         socket.emit('join_error', { message: 'Partie pleine' });
         return;
       }
 
-      // Vérifier si la classe est déjà prise (et ce n'est pas une reconnexion)
       if (game.players.some(p => p.className === playerClass)) {
         socket.emit('join_error', { message: 'Classe déjà prise' });
         return;
       }
 
-      // Vérifier si la partie a déjà commencé (et ce n'est pas une reconnexion)
       if (game.started) {
         socket.emit('join_error', { message: 'Partie déjà commencée' });
         return;
       }
     } else {
-      // Créer une nouvelle partie
       const newGameId = this.generateGameId();
       game = new Game(newGameId, this.io);
       this.games.set(newGameId, game);
       console.log(`Nouvelle partie créée: ${newGameId}`);
     }
 
-    // Ajouter le joueur à la partie
-    const success = game.addPlayer(socket, playerClass);
+    const success = game.addPlayer(socket, playerClass, pseudo);
     if (success) {
+      const player = game.getPlayer(socket.id);
       this.socketToGame.set(socket.id, game.gameId);
       socket.join(`game_${game.gameId}`);
       socket.emit('join_success', {
         gameId: game.gameId,
         playerId: socket.id,
-        playerColor: game.getPlayer(socket.id).color,
-        playerClass: playerClass
+        playerColor: player.color,
+        playerClass: playerClass,
+        pseudo: player.pseudo
       });
 
       this.io.to(`game_${game.gameId}`).emit('game_state_update', game.getGameState());

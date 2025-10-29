@@ -33,19 +33,37 @@ export default class Game {
     return grid;
   }
 
-  // Ajouter un joueur
-  addPlayer(socket, playerClass) {
+  addPlayer(socket, playerClass, pseudo = '') {
     if (this.players.length >= 4) return false;
     if (this.players.some(p => p.className === playerClass)) return false;
 
     const color = this.availableColors.shift();
     const PlayerClass = this.getPlayerClass(playerClass);
-    const player = new PlayerClass(socket.id, color, this);
+    
+    if (!pseudo) {
+      pseudo = this.generateRandomPseudo();
+    }
+    
+    const player = new PlayerClass(socket.id, color, this, pseudo);
     
     this.players.push(player);
-    console.log(`Joueur ${socket.id} a rejoint la partie ${this.gameId} avec la classe ${playerClass}`);
+    console.log(`Joueur ${pseudo} (${socket.id}) a rejoint la partie ${this.gameId} avec la classe ${playerClass}`);
     
     return true;
+  }
+
+  generateRandomPseudo() {
+    const pseudos = [
+      'Jean-Passe', 'Marie-Olette', 'Pierre-Fect', 'Sophie-Stiqué',
+      'Paul-Ochon', 'Julie-Ette', 'Marc-Hand', 'Anne-Anas',
+      'Luc-Arne', 'Emma-Nuelle', 'Tom-Ate', 'Clara-Vate',
+      'Hugo-Lant', 'Léa-Zard', 'Max-Imum', 'Chloé-Ture',
+      'Alex-Térieur', 'Sarah-Phin', 'Lucas-Cade', 'Zoé-Nith',
+      'Théo-Rie', 'Inès-Péré', 'Nathan-Tique', 'Manon-Yme',
+      'Arthur-Mite', 'Camille-Éon', 'Louis-Tique', 'Jade-Ite',
+      'Gabriel-Ium', 'Lily-Acé', 'Raphaël-Ectrique', 'Nina-Teur'
+    ];
+    return pseudos[Math.floor(Math.random() * pseudos.length)];
   }
 
   getPlayerClass(className) {
@@ -216,6 +234,7 @@ export default class Game {
     const player = this.getPlayer(playerId);
     if (!player || !this.started) return;
 
+    player.hasSkipped = true;
     player.actionPoints = 0;
     this.broadcastGameState();
     this.checkWaveComplete();
@@ -343,7 +362,9 @@ export default class Game {
         id: p.playerId,
         color: p.color,
         class: p.className,
+        pseudo: p.pseudo,
         actionPoints: p.actionPoints,
+        hasSkipped: p.hasSkipped,
         canPlace: p.canPlace(),
         canDestroy: p.canDestroy(),
         canUseAbility: p.canUseAbility(),
