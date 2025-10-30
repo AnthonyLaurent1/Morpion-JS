@@ -35,13 +35,23 @@ joinBtn.addEventListener('click', () => {
   const pseudo = pseudoInput.value.trim();
   const gameId = gameIdInput.value.trim();
 
-  sessionStorage.setItem('playerClass', selectedClass);
-  if (pseudo) {
-    sessionStorage.setItem('playerPseudo', pseudo);
-  } else {
-    sessionStorage.removeItem('playerPseudo');
+  // Validation du pseudo
+  if (pseudo && (pseudo.length < 3 || pseudo.length > 20)) {
+    showError('Le pseudo doit faire entre 3 et 20 caractères');
+    return;
   }
+
+  // Générer un pseudo aléatoire si non fourni
+  const finalPseudo = pseudo || `Joueur${Math.floor(Math.random() * 9999)}`;
+
+  sessionStorage.setItem('playerClass', selectedClass);
+  sessionStorage.setItem('playerPseudo', finalPseudo);
+  
   if (gameId) {
+    if (!gameId.match(/^\d+$/)) {
+      showError('Le code de partie doit être un nombre');
+      return;
+    }
     sessionStorage.setItem('gameId', gameId);
   } else {
     sessionStorage.removeItem('gameId');

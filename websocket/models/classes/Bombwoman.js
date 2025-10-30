@@ -6,8 +6,8 @@
 import Player from '../Player.js';
 
 export default class Bombwoman extends Player {
-  constructor(playerId, color, game) {
-    super(playerId, color, game);
+  constructor(playerId, color, game, pseudo) {
+    super(playerId, color, game, pseudo);
     this.className = 'bombwoman';
     this.abilityCooldown = 10000; // 10s
     this.blockedRow = null;

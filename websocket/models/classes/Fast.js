@@ -1,8 +1,8 @@
 import Player from '../Player.js';
 
 export default class Fast extends Player {
-  constructor(playerId, color, game) {
-    super(playerId, color, game);
+  constructor(playerId, color, game, pseudo) {
+    super(playerId, color, game, pseudo);
     this.className = 'fast';
   }
 
