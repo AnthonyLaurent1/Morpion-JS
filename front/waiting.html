@@ -22,10 +22,13 @@
     <div class="waiting-message">
       <div class="spinner"></div>
       <p>En attente de joueurs...</p>
-      <p class="subtitle">La partie commencera automatiquement avec 4 joueurs</p>
+      <p class="subtitle">Quand vous êtes prêts, cliquez sur "Démarrer la partie" (min 2 joueurs)</p>
     </div>
 
-    <button id="leaveBtn" class="leave-btn">Quitter la partie</button>
+    <div class="actions">
+      <button id="startGameBtn" class="start-btn">Démarrer la partie</button>
+      <button id="leaveBtn" class="leave-btn">Quitter la partie</button>
+    </div>
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
