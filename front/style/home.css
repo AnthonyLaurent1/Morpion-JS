@@ -235,41 +235,55 @@ html, body {
   font-size: 1.6rem;
 }
 
-.classes-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-bottom: 30px;
+
+/* ===== CARROUSEL WRAPPER ===== */
+
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  gap: 10px;
 }
 
+
+/* ===== CARROUSEL ===== */
+
+
+.classes-grid {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 15px;
+  padding: 10px;
+  width: calc(4 * 180px + 3 * 15px); /* 4 cartes + gaps */
+  max-width: 100%; /* sécurité */
+}
+
+
+.classes-grid::-webkit-scrollbar {
+  height: 8px;
+}
+.classes-grid::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+/* ===== CARDS ===== */
+
+
 .class-card {
-  background: var(--bg);
+  flex: 0 0 180px; /* largeur fixe */
+  scroll-snap-align: center;
+  background: var(--bg-light);
   border: 2px solid var(--border);
   border-radius: 16px;
   padding: 20px 15px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.class-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(139, 92, 246, 0.1));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.class-card:hover::before {
-  opacity: 1;
-}
 
 .class-card:hover {
   transform: translateY(-6px) scale(1.02);
@@ -277,39 +291,43 @@ html, body {
   box-shadow: 0 12px 30px rgba(79, 70, 229, 0.4);
 }
 
-.class-card.selected {
-  border-color: var(--primary);
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(139, 92, 246, 0.15));
-  box-shadow: 0 0 30px rgba(79, 70, 229, 0.5);
-  animation: glow 2s infinite;
-  transform: scale(1.03);
-}
-
 .class-icon {
-  font-size: 2.8rem;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
   margin-bottom: 12px;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-  transition: transform 0.3s ease;
 }
 
-.class-card:hover .class-icon {
-  transform: scale(1.2) rotate(5deg);
-}
 
 .class-card h3 {
-  font-size: 1.05rem;
-  margin-bottom: 8px;
-  color: var(--text);
-  font-weight: 700;
-  position: relative;
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
 }
 
+
 .class-card p {
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  margin-bottom: 12px;
-  min-height: 42px;
-  line-height: 1.4;
+  font-size: clamp(0.75rem, 1.8vw, 0.95rem);
+}
+
+
+.cooldown {
+  font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+  padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px);
+}
+
+
+/* ===== BOUTONS CARROUSEL ===== */
+.carousel-btn {
+  background: var(--bg-light);
+  border: 2px solid var(--border);
+  color: var(--text);
+  font-size: 1.4rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.carousel-btn:hover {
+  background: var(--primary);
+  color: white;
 }
 
 .cooldown {
@@ -641,27 +659,62 @@ html, body {
     padding: 25px 20px;
   }
 
-  .classes-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-  }
+/* ======= CARROUSEL DES CLASSES ======= */
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  .class-card {
-    padding: 15px 10px;
-  }
+.classes-grid {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 15px;
+  padding: 10px 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--bg);
+}
 
-  .class-icon {
-    font-size: 2.2rem;
-  }
+.classes-grid::-webkit-scrollbar {
+  height: 8px;
+}
+.classes-grid::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
 
-  .class-card h3 {
-    font-size: 0.95rem;
-  }
+.class-card {
+  flex: 0 0 180px; /* largeur fixe pour le carrousel */
+  scroll-snap-align: center;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-  .class-card p {
-    font-size: 0.8rem;
-    min-height: 38px;
-  }
+.carousel-btn {
+  background: var(--bg-light);
+  border: 2px solid var(--border);
+  color: var(--text);
+  font-size: 1.4rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.carousel-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
 
   .join-btn {
     padding: 16px 20px;

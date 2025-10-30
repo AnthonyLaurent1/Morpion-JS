@@ -137,3 +137,17 @@ gameIdInput.addEventListener('keypress', (e) => {
     joinBtn.click();
   }
 });
+
+// ===== CARROUSEL DE CLASSES =====
+const carousel = document.querySelector('.classes-grid');
+const leftBtn = document.querySelector('.carousel-btn.left');
+const rightBtn = document.querySelector('.carousel-btn.right');
+
+if (carousel && leftBtn && rightBtn) {
+  leftBtn.addEventListener('click', () => {
+    carousel.scrollBy({ left: -200, behavior: 'smooth' });
+  });
+  rightBtn.addEventListener('click', () => {
+    carousel.scrollBy({ left: 200, behavior: 'smooth' });
+  });
+}

@@ -1,0 +1,135 @@
+:root {
+  --primary: #4f46e5;
+  --accent: #8b5cf6;
+  --bg: #0f172a;
+  --bg-light: #1e293b;
+  --text: #f1f5f9;
+  --text-dim: #94a3b8;
+  --border: #334155;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  min-height: 100vh;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: linear-gradient(135deg, var(--bg) 0%, #1a1f3a 100%);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+.main-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.main-header h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+/* ===== CARROUSEL WRAPPER ===== */
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+/* ===== CARROUSEL ===== */
+.classes-grid {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 15px;
+  padding: 10px 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--bg);
+}
+.classes-grid::-webkit-scrollbar {
+  height: 8px;
+}
+.classes-grid::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+/* ===== CARDS ===== */
+.class-card {
+  flex: 0 0 180px; /* largeur fixe pour le carrousel */
+  scroll-snap-align: center;
+  background: var(--bg-light);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.class-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: var(--primary);
+  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.4);
+}
+.class-icon {
+  font-size: 2.8rem;
+  margin-bottom: 12px;
+}
+.class-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-weight: 700;
+}
+.class-card p {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  min-height: 42px;
+}
+.cooldown {
+  display: inline-block;
+  padding: 5px 12px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ===== BOUTONS CARROUSEL ===== */
+.carousel-btn {
+  background: var(--bg-light);
+  border: 2px solid var(--border);
+  color: var(--text);
+  font-size: 1.4rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.carousel-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .class-card {
+    flex: 0 0 150px;
+  }
+}
+@media (max-width: 480px) {
+  .class-card {
+    flex: 0 0 120px;
+  }
+}
