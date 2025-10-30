@@ -739,6 +739,17 @@ socket.on('time_stop_end', (data) => {
 socket.on('game_over', (data) => {
   if (timerInterval) clearInterval(timerInterval);
   
+  // Envoyer les résultats au serveur pour mise à jour du classement
+  const isWinner = data.winner && data.winner.id === myPlayerId;
+  const playerPseudo = sessionStorage.getItem('playerPseudo');
+  
+  if (playerPseudo) {
+    socket.emit('update_ranking', {
+      pseudo: playerPseudo,
+      isWinner: isWinner
+    });
+  }
+  
   showGameOver(data);
 });
 
