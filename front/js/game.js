@@ -122,11 +122,11 @@ const classInfo = {
     description: 'Blocs avec 2 PV',
     cooldown: 'Passif'
   },
-  'roulette': {
-    icon: '🎰',
-    name: 'La Roulette',
-    description: 'Pose 2 blocs aléatoires sur une ligne',
-    cooldown: '10s'
+  'nuke': {
+    icon: '☢️',
+    name: 'Le Nuke',
+    description: 'Détruit toute la grille, place 3 blocs neutres',
+    cooldown: '5 vagues'
   },
   'shuffle': {
     icon: '🔀',
@@ -290,19 +290,14 @@ function showAbilityAnimation(className, x, y) {
       AnimationSystem.parieur(targetCell, parieurCells);
       break;
       
-    case 'roulette':
-      // 2 cellules sur une ligne
-      const rouletteCells = [];
-      for (let i = 0; i < 5; i++) {
-        if (Math.random() < 0.4) { // Simuler les 2 cellules
-          rouletteCells.push(cells[x * 5 + i]);
-        }
-      }
-      AnimationSystem.roulette(rouletteCells);
-      break;
-      
     case 'shuffle':
       AnimationSystem.shuffle(Array.from(cells));
+      break;
+      
+    case 'nuke':
+      // Animation pour toute la grille
+      const allCells = Array.from(cells);
+      AnimationSystem.explosion(targetCell, allCells);
       break;
       
     case 'aleatoire':
@@ -419,7 +414,19 @@ function updatePlayersList(players) {
     abilityIcon.className = 'ability-icon';
     abilityIcon.textContent = classInfo[player.class].icon;
     abilityP.appendChild(abilityIcon);
-    abilityP.appendChild(document.createTextNode(` ${player.abilityCharges}/3`));
+    
+    // Texte de charge différent pour la Nuke
+    if (player.class === 'nuke') {
+      const wavesSinceLastUse = gameState.waveNumber - (player.lastChargeWave || 0);
+      const wavesRemaining = Math.max(0, 5 - wavesSinceLastUse);
+      if (player.abilityCharges > 0) {
+        abilityP.appendChild(document.createTextNode(` Prêt !`));
+      } else {
+        abilityP.appendChild(document.createTextNode(` ${wavesRemaining} vagues`));
+      }
+    } else {
+      abilityP.appendChild(document.createTextNode(` ${player.abilityCharges}/3`));
+    }
     
     statsDiv.appendChild(paP);
     statsDiv.appendChild(abilityP);
@@ -487,7 +494,19 @@ function updateCooldowns(player) {
   // Mise à jour des indicateurs de cooldown
   placeCooldownEl.textContent = myPlayer.canPlace ? 'OK' : 'CD';
   destroyCooldownEl.textContent = myPlayer.canDestroy ? 'OK' : 'CD';
-  abilityCooldownEl.textContent = myPlayer.canUseAbility ? 'OK' : `${myPlayer.abilityCharges}/3`;
+  
+  // Affichage spécial du cooldown pour la Nuke
+  if (myPlayer.class === 'nuke') {
+    const wavesSinceLastUse = gameState.waveNumber - (myPlayer.lastChargeWave || 0);
+    const wavesRemaining = Math.max(0, 5 - wavesSinceLastUse);
+    if (myPlayer.canUseAbility) {
+      abilityCooldownEl.textContent = 'PRÊT';
+    } else {
+      abilityCooldownEl.textContent = `${wavesRemaining} vagues`;
+    }
+  } else {
+    abilityCooldownEl.textContent = myPlayer.canUseAbility ? 'OK' : `${myPlayer.abilityCharges}/3`;
+  }
   
   actionPointsDisplay.textContent = `PA: ${myPlayer.actionPoints}`;
   

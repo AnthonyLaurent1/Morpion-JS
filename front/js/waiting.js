@@ -50,7 +50,6 @@ const classIcons = {
   'bombwoman': '💥',
   'fast': '⚡',
   'solide': '🛡️',
-  'roulette': '🎰',
   'shuffle': '🔀',
   'voyageur': '⏰'
 };
@@ -61,7 +60,6 @@ const classNames = {
   'bombwoman': 'Bombwoman',
   'fast': 'Le Fast',
   'solide': 'Le Solide',
-  'roulette': 'La Roulette',
   'shuffle': 'Le Shuffle',
   'voyageur': 'Le Voyageur'
 };

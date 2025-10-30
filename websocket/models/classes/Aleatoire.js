@@ -9,7 +9,7 @@ export default class Aleatoire extends Player {
   }
 
   selectRandomAbility() {
-    const abilities = ['bombman', 'bombwoman', 'parieur', 'roulette', 'shuffle'];
+    const abilities = ['bombman', 'bombwoman', 'parieur', 'shuffle'];
     this.currentAbility = abilities[Math.floor(Math.random() * abilities.length)];
   }
 
@@ -32,9 +32,7 @@ export default class Aleatoire extends Player {
       case 'parieur':
         result = this.parieurAbility(x, y);
         break;
-      case 'roulette':
-        result = this.rouletteAbility(x, y);
-        break;
+
       case 'shuffle':
         result = this.shuffleAbility();
         break;
@@ -117,33 +115,7 @@ export default class Aleatoire extends Player {
     return { success: true };
   }
 
-  rouletteAbility(x, y) {
-    if (x < 0 || x >= 5) {
-      return { success: false, reason: 'out_of_bounds' };
-    }
 
-    const availablePositions = [];
-    for (let col = 0; col < 5; col++) {
-      if (this.game.grid[x][col].color === null) {
-        availablePositions.push(col);
-      }
-    }
-
-    if (availablePositions.length < 2) {
-      return { success: false, reason: 'not_enough_space' };
-    }
-
-    for (let i = 0; i < 2 && availablePositions.length > 0; i++) {
-      const randomIndex = Math.floor(Math.random() * availablePositions.length);
-      const col = availablePositions.splice(randomIndex, 1)[0];
-      
-      this.game.grid[x][col].color = this.color;
-      this.game.grid[x][col].hp = 1;
-      this.game.grid[x][col].playerId = this.playerId;
-    }
-
-    return { success: true };
-  }
 
   shuffleAbility() {
     const blocks = [];
