@@ -145,7 +145,7 @@ function updatePlayersList(players) {
     
     const colorDiv = document.createElement('div');
     colorDiv.className = 'player-color';
-    colorDiv.style.backgroundColor = player.color;
+    colorDiv.style.backgroundColor = player.color;  
     
     const infoDiv = document.createElement('div');
     infoDiv.className = 'player-info';
