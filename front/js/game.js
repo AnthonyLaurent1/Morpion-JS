@@ -175,19 +175,39 @@ function displayClassInfo() {
 // Configuration des boutons de mode
 function setupModeButtons() {
   placeModeBtn.addEventListener('click', () => {
-    currentMode = 'place';
+    setMode('place');
     updateModeButtons();
   });
 
   destroyModeBtn.addEventListener('click', () => {
-    currentMode = 'destroy';
+    setMode('destroy');
     updateModeButtons();
   });
 
   abilityModeBtn.addEventListener('click', () => {
-    currentMode = 'ability';
+    setMode('ability');
     updateModeButtons();
   });
+
+  function updateModeButtons() {
+    // Retirer la classe active de tous les boutons
+    placeModeBtn.classList.remove('active');
+    destroyModeBtn.classList.remove('active');
+    abilityModeBtn.classList.remove('active');
+    
+    // Ajouter la classe active au bouton du mode actuel
+    switch (currentMode) {
+      case 'place':
+        placeModeBtn.classList.add('active');
+        break;
+      case 'destroy':
+        destroyModeBtn.classList.add('active');
+        break;
+      case 'ability':
+        abilityModeBtn.classList.add('active');
+        break;
+    }
+  }
 
   skipTurnBtn.addEventListener('click', () => {
     socket.emit('skip_turn');
@@ -311,6 +331,7 @@ function updatePlayersList(players) {
     
     const item = document.createElement('div');
     item.className = 'player-item' + (isMe ? ' active' : '');
+    item.setAttribute('data-player-id', player.id); // Pour les mises à jour ciblées
     
     const colorDiv = document.createElement('div');
     colorDiv.className = 'player-color-indicator';
@@ -320,49 +341,93 @@ function updatePlayersList(players) {
     detailsDiv.className = 'player-details';
     
     const nameP = document.createElement('p');
+    nameP.className = 'player-name';
     nameP.textContent = isMe ? `Vous (${player.pseudo})` : player.pseudo;
     
     const classP = document.createElement('p');
     classP.className = 'player-class';
     classP.textContent = classInfo[player.class].name;
     
+    // Container pour les informations de PA et de statut
+    const statsDiv = document.createElement('div');
+    statsDiv.className = 'player-stats';
+    
     const paP = document.createElement('p');
     paP.className = 'player-pa';
     if (player.hasSkipped) {
-      paP.textContent = 'A passé son tour';
-      paP.style.fontStyle = 'italic';
+      paP.innerHTML = '<span class="skip-indicator">⏭️ A passé son tour</span>';
       paP.style.color = 'var(--text-dim)';
     } else {
-      paP.textContent = `PA: ${player.actionPoints}`;
+      const paSpan = document.createElement('span');
+      paSpan.className = 'pa-value' + (player.actionPoints > 0 ? ' has-pa' : '');
+      paSpan.textContent = `${player.actionPoints} PA`;
+      paP.appendChild(paSpan);
     }
     
     const abilityP = document.createElement('p');
     abilityP.className = 'player-ability';
-    abilityP.textContent = `Pouvoir: ${player.abilityCharges}/3`;
+    const abilityIcon = document.createElement('span');
+    abilityIcon.className = 'ability-icon';
+    abilityIcon.textContent = classInfo[player.class].icon;
+    abilityP.appendChild(abilityIcon);
+    abilityP.appendChild(document.createTextNode(` ${player.abilityCharges}/3`));
+    
+    statsDiv.appendChild(paP);
+    statsDiv.appendChild(abilityP);
     
     detailsDiv.appendChild(nameP);
     detailsDiv.appendChild(classP);
-    detailsDiv.appendChild(paP);
-    detailsDiv.appendChild(abilityP);
+    detailsDiv.appendChild(statsDiv);
     
     item.appendChild(colorDiv);
     item.appendChild(detailsDiv);
+    
+    // Ajouter un indicateur de tour si c'est au joueur de jouer
+    if (player.actionPoints > 0 && !player.hasSkipped) {
+      const turnIndicator = document.createElement('div');
+      turnIndicator.className = 'turn-indicator';
+      turnIndicator.textContent = '►';
+      item.appendChild(turnIndicator);
+    }
     
     playersListEl.appendChild(item);
   });
 }
 
 function updateCooldowns(player) {
+  console.log('Mise à jour des cooldowns...');
   const myPlayer = gameState.players.find(p => p.id === myPlayerId);
-  if (!myPlayer) return;
+  if (!myPlayer) {
+    console.log('Joueur non trouvé dans gameState');
+    return;
+  }
   
   const passiveClasses = ['fast', 'solide'];
   const hasPassiveClass = passiveClasses.includes(myPlayer.class);
   
-  placeModeBtn.disabled = !myPlayer.canPlace;
-  destroyModeBtn.disabled = !myPlayer.canDestroy;
-  abilityModeBtn.disabled = !myPlayer.canUseAbility;
-  skipTurnBtn.disabled = myPlayer.actionPoints === 0;
+  // Vérifier si c'est le début d'une nouvelle vague
+  const isNewWave = gameState.lastAction === null || gameState.lastAction === undefined;
+  
+  // Au début d'une vague, tous les joueurs avec des PA peuvent jouer
+  const canPlay = isNewWave ? (myPlayer.actionPoints > 0) : myPlayer.canPlay;
+  
+  console.log('État du joueur:', {
+    actionPoints: myPlayer.actionPoints,
+    canPlay,
+    isNewWave
+  });
+  
+  // Activer tous les boutons au début d'une nouvelle vague si le joueur a des PA
+  placeModeBtn.disabled = false;
+  destroyModeBtn.disabled = false;
+  abilityModeBtn.disabled = false;
+  skipTurnBtn.disabled = false;
+  
+  // Retirer les classes visuelles de désactivation
+  placeModeBtn.classList.remove('disabled');
+  destroyModeBtn.classList.remove('disabled');
+  abilityModeBtn.classList.remove('disabled');
+  skipTurnBtn.classList.remove('disabled');
   
   if (hasPassiveClass) {
     abilityModeBtn.style.display = 'none';
@@ -370,17 +435,29 @@ function updateCooldowns(player) {
     abilityModeBtn.style.display = 'flex';
   }
   
-  placeCooldownEl.textContent = myPlayer.canPlace ? 'OK' : 'X';
-  destroyCooldownEl.textContent = myPlayer.canDestroy ? 'OK' : 'X';
+  // Mise à jour des indicateurs de cooldown
+  placeCooldownEl.textContent = myPlayer.canPlace ? 'OK' : 'CD';
+  destroyCooldownEl.textContent = myPlayer.canDestroy ? 'OK' : 'CD';
   abilityCooldownEl.textContent = myPlayer.canUseAbility ? 'OK' : `${myPlayer.abilityCharges}/3`;
   
   actionPointsDisplay.textContent = `PA: ${myPlayer.actionPoints}`;
   
-  if (myPlayer.actionPoints > 0) {
+  // Mise à jour du message de statut
+  if (canPlay) {
     statusMessageEl.textContent = `A vous de jouer !`;
+    statusMessageEl.style.color = 'var(--success)';
   } else {
     statusMessageEl.textContent = 'En attente des autres joueurs...';
+    statusMessageEl.style.color = 'var(--text-dim)';
   }
+  
+  // Forcer un rafraîchissement visuel
+  requestAnimationFrame(() => {
+    placeModeBtn.style.opacity = '1';
+    destroyModeBtn.style.opacity = '1';
+    abilityModeBtn.style.opacity = '1';
+    skipTurnBtn.style.opacity = '1';
+  });
 }
 
 // Démarrer le timer de vague
@@ -407,7 +484,41 @@ socket.on('join_success', (data) => {
   console.log('Reconnecté au jeu');
 });
 
+// Fonction pour mettre à jour uniquement les PA d'un joueur
+function updatePlayerActionPoints(playerId, actionPoints, hasSkipped) {
+  const playerItem = playersListEl.querySelector(`[data-player-id="${playerId}"]`);
+  if (!playerItem) return;
+
+  const paElement = playerItem.querySelector('.player-pa');
+  if (!paElement) return;
+
+  if (hasSkipped) {
+    paElement.innerHTML = '<span class="skip-indicator">⏭️ A passé son tour</span>';
+    paElement.style.color = 'var(--text-dim)';
+  } else {
+    const paSpan = document.createElement('span');
+    paSpan.className = 'pa-value' + (actionPoints > 0 ? ' has-pa' : '');
+    paSpan.textContent = `${actionPoints} PA`;
+    paElement.innerHTML = '';
+    paElement.appendChild(paSpan);
+  }
+
+  // Mettre à jour l'indicateur de tour
+  const oldTurnIndicator = playerItem.querySelector('.turn-indicator');
+  if (oldTurnIndicator) {
+    oldTurnIndicator.remove();
+  }
+  
+  if (actionPoints > 0 && !hasSkipped) {
+    const turnIndicator = document.createElement('div');
+    turnIndicator.className = 'turn-indicator';
+    turnIndicator.textContent = '►';
+    playerItem.appendChild(turnIndicator);
+  }
+}
+
 socket.on('game_state_update', (state) => {
+  const previousState = gameState;
   gameState = state;
   
   if (state.grid) {
@@ -415,7 +526,29 @@ socket.on('game_state_update', (state) => {
   }
   
   if (state.players) {
-    updatePlayersList(state.players);
+    // Vérifier si seuls les PA ont changé
+    const onlyActionPointsChanged = previousState && 
+      previousState.players.length === state.players.length &&
+      state.players.every(player => {
+        const prevPlayer = previousState.players.find(p => p.id === player.id);
+        return prevPlayer && 
+               prevPlayer.pseudo === player.pseudo &&
+               prevPlayer.class === player.class &&
+               prevPlayer.color === player.color &&
+               (prevPlayer.actionPoints !== player.actionPoints || 
+                prevPlayer.hasSkipped !== player.hasSkipped);
+      });
+
+    if (onlyActionPointsChanged) {
+      // Mise à jour optimisée des PA uniquement
+      state.players.forEach(player => {
+        updatePlayerActionPoints(player.id, player.actionPoints, player.hasSkipped);
+      });
+    } else {
+      // Mise à jour complète de la liste des joueurs
+      updatePlayersList(state.players);
+    }
+    
     updateCooldowns();
   }
   
@@ -427,7 +560,93 @@ socket.on('game_state_update', (state) => {
 socket.on('wave_start', (data) => {
   waveNumberEl.textContent = data.waveNumber;
   startWaveTimer(data.duration);
+  
+  // Mise à jour immédiate des PA au début de la vague
+  if (data.players) {
+    gameState.players = data.players;
+    
+    // Réinitialiser l'interface pour la nouvelle vague
+    data.players.forEach(player => {
+      // Mettre à jour les points d'action
+      if (player.actionPoints > 0) {
+        actionPointsDisplay.textContent = `PA: ${player.actionPoints}`;
+      }
+    });
+    
+    // Forcer la mise à jour complète de l'interface
+    updatePlayersList(data.players);
+    updateCooldowns();
+    
+    // Réactiver les boutons si le joueur actuel a des PA
+    const currentPlayer = data.players.find(p => p.id === myPlayerId);
+    if (currentPlayer && currentPlayer.actionPoints > 0) {
+      placeModeBtn.disabled = false;
+      destroyModeBtn.disabled = false;
+      abilityModeBtn.disabled = false;
+      skipTurnBtn.disabled = false;
+      
+      // Retirer les classes de désactivation
+      placeModeBtn.classList.remove('disabled');
+      destroyModeBtn.classList.remove('disabled');
+      abilityModeBtn.classList.remove('disabled');
+      skipTurnBtn.classList.remove('disabled');
+      
+      setMode('place');
+      updateModeButtons();
+    }
+  }
+  
   showWaveAnimation(data.waveNumber);
+  
+  // Mettre à jour le message de statut
+  const myPlayer = gameState.players.find(p => p.id === myPlayerId);
+  if (myPlayer && myPlayer.actionPoints > 0) {
+    statusMessageEl.textContent = 'Nouvelle vague ! À vous de jouer !';
+    statusMessageEl.style.color = 'var(--success)';
+  } else {
+    statusMessageEl.textContent = 'Nouvelle vague ! En attente de votre tour...';
+    statusMessageEl.style.color = 'var(--text-dim)';
+  }
+});
+
+// Nouvel événement pour la synchronisation complète
+socket.on('sync_state', (data) => {
+  console.log('Synchronisation reçue:', data);
+  
+  // Mettre à jour l'état complet du jeu
+  gameState = data.gameState;
+  
+  // Réinitialiser tous les états visuels
+  const myPlayer = gameState.players.find(p => p.id === myPlayerId);
+  if (myPlayer) {
+    // Activer les boutons si le joueur a des PA
+    const hasActionPoints = myPlayer.actionPoints > 0;
+    
+    placeModeBtn.disabled = false;
+    destroyModeBtn.disabled = false;
+    abilityModeBtn.disabled = false;
+    skipTurnBtn.disabled = false;
+    
+    placeModeBtn.classList.remove('disabled');
+    destroyModeBtn.classList.remove('disabled');
+    abilityModeBtn.classList.remove('disabled');
+    skipTurnBtn.classList.remove('disabled');
+    
+    setMode('place'); // Revenir au mode par défaut
+    updateModeButtons();
+  }
+  
+  // Mettre à jour toute l'interface
+  updateBoard(gameState.grid);
+  updatePlayersList(gameState.players);
+  updateCooldowns();
+  
+  // Force le rafraîchissement du DOM
+  requestAnimationFrame(() => {
+    updateBoard(gameState.grid);
+    updatePlayersList(gameState.players);
+    updateCooldowns();
+  });
 });
 
 function showWaveAnimation(waveNumber) {
@@ -435,12 +654,18 @@ function showWaveAnimation(waveNumber) {
   waveOverlay.classList.remove('hidden');
   waveOverlay.classList.add('show');
   
+  // Réduire la durée de l'animation et s'assurer que l'interface est interactive
   setTimeout(() => {
     waveOverlay.classList.remove('show');
-    setTimeout(() => {
-      waveOverlay.classList.add('hidden');
-    }, 300);
-  }, 1000);
+    waveOverlay.classList.add('hidden');
+    
+    // Forcer une mise à jour de l'interface
+    if (gameState) {
+      updateBoard(gameState.grid);
+      updatePlayersList(gameState.players);
+      updateCooldowns();
+    }
+  }, 500);
 }
 
 socket.on('wave_end', (data) => {
