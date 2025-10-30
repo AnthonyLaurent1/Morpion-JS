@@ -97,13 +97,23 @@ export default class GameManager {
       });
 
       this.io.to(`game_${game.gameId}`).emit('game_state_update', game.getGameState());
-
-      if (game.players.length >= 2 && !game.started) {
-        game.startGame();
-      }
     } else {
       socket.emit('join_error', { message: 'Erreur lors de la connexion' });
     }
+  }
+
+  // Démarrer la partie manuellement
+  handleStartGame(socket) {
+    const gameId = this.socketToGame.get(socket.id);
+    if (!gameId) return;
+    const game = this.games.get(gameId);
+    if (!game) return;
+    if (game.started) return;
+    if (game.players.length < 2) {
+      socket.emit('start_error', { message: 'Minimum 2 joueurs requis' });
+      return;
+    }
+    game.startGame();
   }
 
   // Placer un bloc
