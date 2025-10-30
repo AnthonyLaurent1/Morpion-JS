@@ -131,6 +131,23 @@ h1 {
 .player-class {
   color: var(--text-dim);
   font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.player-trophies {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.trophy-icon {
+  color: #ffd700;
+}
+
+.trophy-count {
+  font-weight: 600;
 }
 
 .player-badge {
