@@ -1,6 +1,58 @@
 // Configuration
 const SERVER_URL = window.location.origin;
 
+// Fonction pour charger et afficher le leaderboard
+function loadLeaderboard() {
+  const leaderboardEl = document.getElementById('leaderboard');
+  
+  fetch(`${SERVER_URL}/api/leaderboard`)
+    .then(response => response.json())
+    .then(response => {
+      if (!response.success) {
+        throw new Error(response.message);
+      }
+      
+      const rankings = response.data;
+      if (!rankings || rankings.length === 0) {
+        leaderboardEl.innerHTML = `
+          <div class="no-players-message">
+            Aucun joueur classé pour le moment.<br>
+            Soyez le premier à remporter une victoire !
+          </div>
+        `;
+        return;
+      }
+      
+      // Afficher les 10 meilleurs joueurs
+      leaderboardEl.innerHTML = rankings.map((player, index) => `
+        <div class="player-rank">
+          <div class="rank-number">${index + 1}</div>
+          <div class="rank-info">
+            <div class="rank-name">${player.pseudo}</div>
+            <div class="rank-trophies">
+              <span class="trophy-icon">🏆</span>
+              ${player.trophies}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    })
+    .catch(error => {
+      console.error('Erreur lors du chargement du classement:', error);
+      leaderboardEl.innerHTML = `
+        <div class="no-players-message">
+          Impossible de charger le classement.<br>
+          Veuillez réessayer plus tard.
+        </div>
+      `;
+    });
+}
+
+// Charger le leaderboard au chargement de la page
+document.addEventListener('DOMContentLoaded', () => {
+  loadLeaderboard();
+});
+
 const pseudoInput = document.getElementById('pseudo');
 const gameIdInput = document.getElementById('gameId');
 const joinBtn = document.getElementById('joinBtn');

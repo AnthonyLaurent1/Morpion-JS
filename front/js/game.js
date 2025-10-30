@@ -739,6 +739,23 @@ socket.on('time_stop_end', (data) => {
 socket.on('game_over', (data) => {
   if (timerInterval) clearInterval(timerInterval);
   
+  if (data.winner) {
+    // Afficher les changements de trophées
+    if (data.winner.id === myPlayerId) {
+      showNotification(`Victoire ! 🎉 +${data.winner.trophyChange} trophées`);
+    } else {
+      const myInfo = data.otherPlayers.find(p => p.id === myPlayerId);
+      if (myInfo) {
+        showNotification(`Défaite ! ${data.winner.pseudo} a gagné 😢 ${myInfo.trophyChange} trophées`);
+      }
+    }
+    
+    // Demander une mise à jour du classement après un délai
+    setTimeout(() => {
+      socket.emit('request_leaderboard');
+    }, 1000);
+  }
+  
   showGameOver(data);
 });
 
@@ -751,10 +768,16 @@ function showGameOver(data) {
   gameOverModal.classList.remove('hidden');
   
   if (data.winner) {
-    gameOverTitle.textContent = data.winner.id === myPlayerId ? '🎉 VICTOIRE !' : '😢 Défaite';
-    gameOverMessage.textContent = data.winner.id === myPlayerId 
-      ? 'Félicitations ! Vous avez gagné !' 
-      : 'Dommage ! Un autre joueur a gagné.';
+    const isWinner = data.winner.id === myPlayerId;
+    gameOverTitle.textContent = isWinner ? '🎉 VICTOIRE !' : '😢 Défaite';
+    
+    // Obtenir les infos du joueur
+    const myInfo = !isWinner ? data.otherPlayers.find(p => p.id === myPlayerId) : null;
+    const trophyChange = isWinner ? data.winner.trophyChange : (myInfo ? myInfo.trophyChange : 0);
+    
+    gameOverMessage.innerHTML = isWinner 
+      ? `Félicitations ! Vous avez gagné !<br><span class="trophy-change positive">+${trophyChange} trophées</span>` 
+      : `Dommage ! ${data.winner.pseudo} a gagné.<br><span class="trophy-change negative">${trophyChange} trophées</span>`;
     
     const info = classInfo[data.winner.class];
     winnerInfoEl.innerHTML = `
@@ -762,7 +785,8 @@ function showGameOver(data) {
         <div class="winner-color" style="background-color: ${data.winner.color}"></div>
         <div class="winner-details">
           <h3>${info.icon} ${info.name}</h3>
-          <p>${data.winner.id === myPlayerId ? 'Vous' : 'Adversaire'}</p>
+          <p>${data.winner.id === myPlayerId ? 'Vous' : data.winner.pseudo}</p>
+          <p class="trophy-change ${isWinner ? 'positive' : ''}">${isWinner ? '+' : ''}${data.winner.trophyChange} trophées</p>
         </div>
       </div>
     `;
