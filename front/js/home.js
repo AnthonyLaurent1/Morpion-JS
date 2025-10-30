@@ -1,17 +1,18 @@
+
 // Configuration
 const SERVER_URL = window.location.origin;
 
 // Fonction pour charger et afficher le leaderboard
 function loadLeaderboard() {
   const leaderboardEl = document.getElementById('leaderboard');
-  
+ 
   fetch(`${SERVER_URL}/api/leaderboard`)
     .then(response => response.json())
     .then(response => {
       if (!response.success) {
         throw new Error(response.message);
       }
-      
+     
       const rankings = response.data;
       if (!rankings || rankings.length === 0) {
         leaderboardEl.innerHTML = `
@@ -78,11 +79,11 @@ classCards.forEach(card => {
   card.addEventListener('click', () => {
     // Retirer la sélection précédente
     classCards.forEach(c => c.classList.remove('selected'));
-    
+   
     // Sélectionner la nouvelle classe
     card.classList.add('selected');
     selectedClass = card.dataset.class;
-    
+   
     // Activer le bouton
     joinBtn.disabled = false;
     errorMsg.textContent = '';
@@ -109,7 +110,7 @@ joinBtn.addEventListener('click', () => {
 
   sessionStorage.setItem('playerClass', selectedClass);
   sessionStorage.setItem('playerPseudo', finalPseudo);
-  
+ 
   if (gameId) {
     if (!gameId.match(/^\d+$/)) {
       showError('Le code de partie doit être un nombre');
@@ -137,3 +138,17 @@ gameIdInput.addEventListener('keypress', (e) => {
     joinBtn.click();
   }
 });
+
+// ===== CARROUSEL DE CLASSES =====
+const carousel = document.querySelector('.classes-grid');
+const leftBtn = document.querySelector('.carousel-btn.left');
+const rightBtn = document.querySelector('.carousel-btn.right');
+
+if (carousel && leftBtn && rightBtn) {
+  leftBtn.addEventListener('click', () => {
+    carousel.scrollBy({ left: -200, behavior: 'smooth' });
+  });
+  rightBtn.addEventListener('click', () => {
+    carousel.scrollBy({ left: 200, behavior: 'smooth' });
+  });
+}

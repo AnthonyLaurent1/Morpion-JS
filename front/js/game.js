@@ -759,13 +759,13 @@ socket.on('game_over', (data) => {
   if (timerInterval) clearInterval(timerInterval);
   
   if (data.winner) {
-    // Afficher les changements de trophées
+    // Afficher les changements d'ELO
     if (data.winner.id === myPlayerId) {
-      showNotification(`Victoire ! 🎉 +${data.winner.trophyChange} trophées`);
+      showNotification(`Victoire ! 🎉 +${data.winner.eloChange} ELO`);
     } else {
       const myInfo = data.otherPlayers.find(p => p.id === myPlayerId);
       if (myInfo) {
-        showNotification(`Défaite ! ${data.winner.pseudo} a gagné 😢 ${myInfo.trophyChange} trophées`);
+        showNotification(`Défaite ! ${data.winner.pseudo} a gagné 😢 ${myInfo.eloChange} ELO`);
       }
     }
     
@@ -792,11 +792,12 @@ function showGameOver(data) {
     
     // Obtenir les infos du joueur
     const myInfo = !isWinner ? data.otherPlayers.find(p => p.id === myPlayerId) : null;
-    const trophyChange = isWinner ? data.winner.trophyChange : (myInfo ? myInfo.trophyChange : 0);
+    const eloChange = isWinner ? data.winner.eloChange : (myInfo ? myInfo.eloChange : 0);
+    const currentElo = isWinner ? data.winner.elo : (myInfo ? myInfo.elo : 0);
     
     gameOverMessage.innerHTML = isWinner 
-      ? `Félicitations ! Vous avez gagné !<br><span class="trophy-change positive">+${trophyChange} trophées</span>` 
-      : `Dommage ! ${data.winner.pseudo} a gagné.<br><span class="trophy-change negative">${trophyChange} trophées</span>`;
+      ? `Félicitations ! Vous avez gagné !<br><span class="trophy-change positive">+${eloChange} ELO (${currentElo})</span>` 
+      : `Dommage ! ${data.winner.pseudo} a gagné.<br><span class="trophy-change negative">${eloChange} ELO (${currentElo})</span>`;
     
     const info = classInfo[data.winner.class];
     winnerInfoEl.innerHTML = `
@@ -805,7 +806,7 @@ function showGameOver(data) {
         <div class="winner-details">
           <h3>${info.icon} ${info.name}</h3>
           <p>${data.winner.id === myPlayerId ? 'Vous' : data.winner.pseudo}</p>
-          <p class="trophy-change ${isWinner ? 'positive' : ''}">${isWinner ? '+' : ''}${data.winner.trophyChange} trophées</p>
+          <p class="trophy-change ${isWinner ? 'positive' : ''}">${isWinner ? '+' : ''}${eloChange} ELO (${currentElo})</p>
         </div>
       </div>
     `;
