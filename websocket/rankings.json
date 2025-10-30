@@ -1,0 +1,16 @@
+{
+  "players": [
+    {
+      "pseudo": "Matéo",
+      "trophies": 100,
+      "wins": 2,
+      "losses": 0
+    },
+    {
+      "pseudo": "Elowan",
+      "trophies": 0,
+      "wins": 0,
+      "losses": 2
+    }
+  ]
+}

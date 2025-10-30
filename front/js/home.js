@@ -5,10 +5,15 @@ const SERVER_URL = window.location.origin;
 function loadLeaderboard() {
   const leaderboardEl = document.getElementById('leaderboard');
   
-  fetch(`${SERVER_URL}/leaderboard`)
+  fetch(`${SERVER_URL}/api/leaderboard`)
     .then(response => response.json())
-    .then(data => {
-      if (!data.players || data.players.length === 0) {
+    .then(response => {
+      if (!response.success) {
+        throw new Error(response.message);
+      }
+      
+      const rankings = response.data;
+      if (!rankings || rankings.length === 0) {
         leaderboardEl.innerHTML = `
           <div class="no-players-message">
             Aucun joueur classé pour le moment.<br>
@@ -18,11 +23,8 @@ function loadLeaderboard() {
         return;
       }
       
-      // Trier les joueurs par nombre de trophées
-      const sortedPlayers = data.players.sort((a, b) => b.trophies - a.trophies);
-      
       // Afficher les 10 meilleurs joueurs
-      leaderboardEl.innerHTML = sortedPlayers.slice(0, 10).map((player, index) => `
+      leaderboardEl.innerHTML = rankings.map((player, index) => `
         <div class="player-rank">
           <div class="rank-number">${index + 1}</div>
           <div class="rank-info">

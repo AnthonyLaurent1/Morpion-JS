@@ -10,6 +10,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import GameManager from './gameManager.js';
+import rankingRoutes from './routes/rankingRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,6 +21,9 @@ app.use(express.json());
 
 // Servir les fichiers statiques du frontend
 app.use(express.static(path.join(__dirname, '../front')));
+
+// Utiliser les routes du classement
+app.use('/api', rankingRoutes);
 
 const server = createServer(app);
 const io = new Server(server, {
@@ -87,6 +91,7 @@ io.on('connection', (socket) => {
     gameManager.handleDisconnect(socket);
   });
 });
+
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`\n========================================`);

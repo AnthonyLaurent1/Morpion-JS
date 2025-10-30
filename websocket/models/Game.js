@@ -5,6 +5,7 @@
 
 import Player from './Player.js';
 import * as Classes from './classes/index.js';
+import RankingManager from './RankingManager.js';
 
 export default class Game {
   constructor(gameId, io) {
@@ -315,13 +316,34 @@ export default class Game {
     // Nettoyer les timers des joueurs
     this.players.forEach(p => p.cleanup());
 
+    // Mise à jour des classements si la partie s'est terminée normalement
+    if (reason === 'victory' && this.players.length >= 2) {
+      console.log('Mise à jour des classements...');
+      try {
+        RankingManager.updateGameResults(winner, this.players);
+        console.log('Classements mis à jour avec succès');
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour des classements:', error);
+      }
+    }
+
+    // Envoyer les résultats de la partie, y compris les changements de trophées
     this.io.to(`game_${this.gameId}`).emit('game_over', {
       reason,
       winner: winner ? {
         id: winner.playerId,
         color: winner.color,
-        class: winner.className
-      } : null
+        class: winner.className,
+        pseudo: winner.pseudo,
+        trophyChange: 50 // Le gagnant gagne 50 trophées
+      } : null,
+      otherPlayers: winner ? this.players
+        .filter(p => p.playerId !== winner.playerId)
+        .map(p => ({
+          id: p.playerId,
+          pseudo: p.pseudo,
+          trophyChange: -30 // Les perdants perdent 30 trophées
+        })) : []
     });
 
     console.log(`Partie ${this.gameId} terminée. Raison: ${reason}`);

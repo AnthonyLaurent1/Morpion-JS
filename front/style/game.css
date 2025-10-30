@@ -635,3 +635,22 @@ h1 {
   opacity: 1;
   transform: translateX(0);
 }
+
+/* Styles pour les changements de trophées */
+.trophy-change {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.trophy-change.positive {
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.trophy-change.negative {
+  color: var(--error);
+  background: rgba(239, 68, 68, 0.1);
+}
