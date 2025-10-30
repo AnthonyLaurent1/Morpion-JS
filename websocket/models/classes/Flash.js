@@ -1,9 +1,9 @@
 import Player from '../Player.js';
 
-export default class Fast extends Player {
+export default class Flash extends Player {
   constructor(playerId, color, game, pseudo) {
     super(playerId, color, game, pseudo);
-    this.className = 'fast';
+    this.className = 'flash';
   }
 
   placeBlock(x, y) {

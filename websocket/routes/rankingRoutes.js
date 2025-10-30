@@ -15,8 +15,8 @@ router.get('/leaderboard', async (req, res) => {
       });
     }
     
-    // Trier par nombre de trophées décroissant
-    const sortedRankings = rankings.sort((a, b) => b.trophies - a.trophies);
+    // Trier par ELO décroissant
+    const sortedRankings = rankings.sort((a, b) => b.elo - a.elo);
     
     // Ne retourner que les 10 premiers
     const top10 = sortedRankings.slice(0, 10);

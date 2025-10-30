@@ -110,9 +110,9 @@ const classInfo = {
     description: 'Détruit une ligne ou colonne entière',
     cooldown: '10s'
   },
-  'fast': {
+  'flash': {
     icon: '⚡',
-    name: 'Le Fast',
+    name: 'Le Flash',
     description: 'Blocs à 0 PV, cooldowns divisés par 2',
     cooldown: 'Passif'
   },
@@ -458,7 +458,7 @@ function updateCooldowns(player) {
     return;
   }
   
-  const passiveClasses = ['fast', 'solide'];
+  const passiveClasses = ['flash', 'solide'];
   const hasPassiveClass = passiveClasses.includes(myPlayer.class);
   
   // Vérifier si c'est le début d'une nouvelle vague

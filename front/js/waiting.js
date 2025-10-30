@@ -48,20 +48,22 @@ const classIcons = {
   'bombman': '💣',
   'parieur': '🎲',
   'bombwoman': '💥',
-  'fast': '⚡',
+  'flash': '⚡',
   'solide': '🛡️',
   'shuffle': '🔀',
-  'voyageur': '⏰'
+  'aleatoire': '🎲',
+  'nuke': '☢️'
 };
 
 const classNames = {
   'bombman': 'Bombman',
   'parieur': 'Le Parieur',
   'bombwoman': 'Bombwoman',
-  'fast': 'Le Fast',
+  'flash': 'Le Flash',
   'solide': 'Le Solide',
   'shuffle': 'Le Shuffle',
-  'voyageur': 'Le Voyageur'
+  'aleatoire': 'L\'Aléatoire',
+  'nuke': 'Le Nuke'
 };
 
 socket.emit('join_game', {
@@ -80,13 +82,19 @@ socket.on('join_success', (data) => {
   
   gameCodeEl.textContent = data.gameId;
 
-  // Récupérer les classements pour obtenir les trophées
+  // Récupérer les classements pour obtenir les ELO
   fetch(`${SERVER_URL}/api/leaderboard`)
     .then(response => response.json())
     .then(response => {
+      console.log('Réponse du leaderboard:', response); // Pour debug
       if (response.success) {
-        playerRankings = new Map(response.data.map(player => [player.pseudo, player.trophies]));
-        // Mettre à jour la liste des joueurs avec les nouveaux trophées
+        playerRankings.clear(); // Nettoyer l'ancienne map
+        response.data.forEach(player => {
+          if (player.pseudo && typeof player.elo === 'number') {
+            playerRankings.set(player.pseudo, player.elo);
+          }
+        });
+        console.log('ELO des joueurs:', playerRankings); // Pour debug
         const gameState = socket.volatile.gameState;
         if (gameState && gameState.players) {
           updatePlayersList(gameState.players);
@@ -170,24 +178,25 @@ function updatePlayersList(players) {
     classP.className = 'player-class';
     classP.textContent = `${classIcons[player.class]} ${classNames[player.class]}`;
     
-    const trophiesDiv = document.createElement('div');
-    trophiesDiv.className = 'player-trophies';
+    const eloDiv = document.createElement('div');
+    eloDiv.className = 'player-trophies'; // Garder la même classe pour le style
     
-    const trophyIcon = document.createElement('span');
-    trophyIcon.className = 'trophy-icon';
-    trophyIcon.textContent = '🏆';
+    const eloIcon = document.createElement('span');
+    eloIcon.className = 'trophy-icon';
+    eloIcon.textContent = '�️';
     
-    const trophyCount = document.createElement('span');
-    trophyCount.className = 'trophy-count';
-    const trophies = playerRankings.get(player.pseudo) || 0;
-    trophyCount.textContent = trophies;
+    const eloCount = document.createElement('span');
+    eloCount.className = 'trophy-count';
+    const elo = playerRankings.has(player.pseudo) ? playerRankings.get(player.pseudo) : 1000;
+    console.log(`ELO pour ${player.pseudo}:`, elo); // Pour debug
+    eloCount.textContent = elo;
     
-    trophiesDiv.appendChild(trophyIcon);
-    trophiesDiv.appendChild(trophyCount);
+    eloDiv.appendChild(eloIcon);
+    eloDiv.appendChild(eloCount);
     
     infoDiv.appendChild(nameP);
     infoDiv.appendChild(classP);
-    infoDiv.appendChild(trophiesDiv);
+    infoDiv.appendChild(eloDiv);
     
     card.appendChild(colorDiv);
     card.appendChild(infoDiv);

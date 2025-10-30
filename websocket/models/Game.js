@@ -72,7 +72,7 @@ export default class Game {
       'bombman': Classes.Bombman,
       'parieur': Classes.Parieur,
       'bombwoman': Classes.Bombwoman,
-      'fast': Classes.Fast,
+      'flash': Classes.Flash,
       'solide': Classes.Solide,
       'shuffle': Classes.Shuffle,
       'aleatoire': Classes.Aleatoire,

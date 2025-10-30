@@ -27,18 +27,33 @@ function loadLeaderboard() {
       // ✅ Afficher uniquement les 6 premiers joueurs
       const topPlayers = rankings.slice(0, 6);
 
-      leaderboardEl.innerHTML = topPlayers.map((player, index) => `
-        <div class="player-rank">
-          <div class="rank-number">${index + 1}</div>
-          <div class="rank-info">
-            <div class="rank-name">${player.pseudo}</div>
-            <div class="rank-trophies">
-              <span class="trophy-icon">🏆</span>
-              ${player.elo}
+      // Trier les joueurs par ELO décroissant
+      const sortedPlayers = rankings.sort((a, b) => b.elo - a.elo).slice(0, 6);
+
+      leaderboardEl.innerHTML = sortedPlayers.map((player, index) => {
+        // Calcul du winrate
+        const gamesPlayed = player.gamesPlayed || 0;
+        const wins = player.wins || 0;
+        const winRate = gamesPlayed > 0 ? Math.round((wins / gamesPlayed) * 100) : 0;
+
+        return `
+          <div class="player-rank">
+            <div class="rank-number">${index + 1}</div>
+            <div class="rank-info">
+              <div class="rank-name">${player.pseudo}</div>
+              <div class="rank-stats">
+                <div class="rank-elo">
+                  <span class="elo-icon">🏆</span>
+                  <span class="elo-value">${player.elo}</span>
+                </div>
+                <div class="rank-details">
+                  <span class="winrate">${winRate}% (${wins}/${gamesPlayed})</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
       // ✅ Si plus de 6 joueurs existent, activer un scroll doux
       if (rankings.length > 6) {

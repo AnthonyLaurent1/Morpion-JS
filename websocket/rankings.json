@@ -10,11 +10,19 @@
     },
     {
       "pseudo": "Elowan",
-      "elo": 990,
+      "elo": 980,
       "wins": 4,
-      "losses": 6,
-      "gamesPlayed": 10,
+      "losses": 7,
+      "gamesPlayed": 11,
       "lastEloChange": -10
+    },
+    {
+      "pseudo": "Kevin",
+      "elo": 1010,
+      "wins": 1,
+      "losses": 0,
+      "gamesPlayed": 1,
+      "lastEloChange": 10
     }
   ]
 }
