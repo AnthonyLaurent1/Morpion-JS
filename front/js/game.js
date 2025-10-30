@@ -30,19 +30,19 @@ socket.on('join_error', (data) => {
   window.location.href = './index.html';
 });
 
-// Rejoindre dès que la connexion est établie
 const gameId = sessionStorage.getItem('gameId');
 const oldSocketId = sessionStorage.getItem('socketId');
+const playerPseudo = sessionStorage.getItem('playerPseudo') || '';
 
 socket.on('connect', () => {
   console.log('✅ Connexion établie avec nouveau socket:', socket.id);
   console.log('📝 Ancien socket:', oldSocketId);
   console.log('🎮 Tentative de reconnexion à la partie:', gameId, 'avec la classe:', playerClass);
   
-  // Rejoindre la partie immédiatement
   socket.emit('join_game', {
     gameId: gameId ? parseInt(gameId) : null,
-    playerClass: playerClass
+    playerClass: playerClass,
+    pseudo: playerPseudo
   });
 });
 
@@ -320,7 +320,7 @@ function updatePlayersList(players) {
     detailsDiv.className = 'player-details';
     
     const nameP = document.createElement('p');
-    nameP.textContent = isMe ? 'Vous' : `Joueur ${players.indexOf(player) + 1}`;
+    nameP.textContent = isMe ? `Vous (${player.pseudo})` : player.pseudo;
     
     const classP = document.createElement('p');
     classP.className = 'player-class';
@@ -328,7 +328,13 @@ function updatePlayersList(players) {
     
     const paP = document.createElement('p');
     paP.className = 'player-pa';
-    paP.textContent = `PA: ${player.actionPoints}`;
+    if (player.hasSkipped) {
+      paP.textContent = 'A passé son tour';
+      paP.style.fontStyle = 'italic';
+      paP.style.color = 'var(--text-dim)';
+    } else {
+      paP.textContent = `PA: ${player.actionPoints}`;
+    }
     
     const abilityP = document.createElement('p');
     abilityP.className = 'player-ability';

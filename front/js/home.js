@@ -26,24 +26,27 @@ classCards.forEach(card => {
   });
 });
 
-// Rejoindre une partie
 joinBtn.addEventListener('click', () => {
   if (!selectedClass) {
     showError('Veuillez sélectionner une classe');
     return;
   }
 
+  const pseudo = pseudoInput.value.trim();
   const gameId = gameIdInput.value.trim();
 
-  // Stocker les informations dans sessionStorage
   sessionStorage.setItem('playerClass', selectedClass);
+  if (pseudo) {
+    sessionStorage.setItem('playerPseudo', pseudo);
+  } else {
+    sessionStorage.removeItem('playerPseudo');
+  }
   if (gameId) {
     sessionStorage.setItem('gameId', gameId);
   } else {
     sessionStorage.removeItem('gameId');
   }
 
-  // Rediriger vers la salle d'attente
   window.location.href = './waiting.html';
 });
 

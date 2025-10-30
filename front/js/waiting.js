@@ -2,9 +2,9 @@
 // Socket.IO utilise http/https, pas ws/wss
 const SERVER_URL = window.location.origin;
 
-// Vérifier si les données sont présentes
 const playerClass = sessionStorage.getItem('playerClass');
 const gameId = sessionStorage.getItem('gameId');
+const playerPseudo = sessionStorage.getItem('playerPseudo') || '';
 
 if (!playerClass) {
   window.location.href = './index.html';
@@ -36,6 +36,7 @@ const gameCodeEl = document.getElementById('gameCode');
 const playerCountEl = document.getElementById('playerCount');
 const playersListEl = document.getElementById('playersList');
 const leaveBtn = document.getElementById('leaveBtn');
+const startGameBtn = document.getElementById('startGameBtn');
 
 // État local
 let currentGameId = null;
@@ -64,10 +65,10 @@ const classNames = {
   'voyageur': 'Le Voyageur'
 };
 
-// Rejoindre la partie
 socket.emit('join_game', {
   gameId: gameId ? parseInt(gameId) : null,
-  playerClass: playerClass
+  playerClass: playerClass,
+  pseudo: playerPseudo
 });
 
 // Succès de la connexion
@@ -92,6 +93,10 @@ socket.on('join_error', (data) => {
 // Mise à jour de l'état du jeu
 socket.on('game_state_update', (state) => {
   updatePlayersList(state.players);
+  // Activer le bouton démarrer si min 2 joueurs et partie pas commencée
+  if (startGameBtn) {
+    startGameBtn.disabled = !(state.players.length >= 2 && !state.started);
+  }
 });
 
 // Partie démarrée
@@ -115,6 +120,17 @@ socket.on('player_left', (data) => {
   console.log('Joueur parti:', data.playerId);
 });
 
+// Démarrer la partie manuellement
+if (startGameBtn) {
+  startGameBtn.addEventListener('click', () => {
+    socket.emit('start_game');
+  });
+}
+
+socket.on('start_error', (data) => {
+  alert(data.message || 'Impossible de démarrer la partie');
+});
+
 // Mise à jour de la liste des joueurs
 function updatePlayersList(players) {
   playerCountEl.textContent = players.length;
@@ -136,7 +152,7 @@ function updatePlayersList(players) {
     
     const nameP = document.createElement('p');
     nameP.className = 'player-name';
-    nameP.textContent = isMe ? 'Vous' : `Joueur ${players.indexOf(player) + 1}`;
+    nameP.textContent = isMe ? `Vous (${player.pseudo})` : player.pseudo;
     
     const classP = document.createElement('p');
     classP.className = 'player-class';

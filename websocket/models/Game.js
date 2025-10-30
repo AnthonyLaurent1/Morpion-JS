@@ -172,13 +172,6 @@ export default class Game {
     const result = player.placeBlock(x, y);
     if (result.success) {
       this.broadcastGameState();
-      
-      const winner = this.checkWin();
-      if (winner) {
-        this.endGame('victory', winner);
-        return;
-      }
-      
       this.checkWaveComplete();
     }
   }
@@ -190,13 +183,6 @@ export default class Game {
     const result = player.destroyBlock(x, y);
     if (result.success) {
       this.broadcastGameState();
-      
-      const winner = this.checkWin();
-      if (winner) {
-        this.endGame('victory', winner);
-        return;
-      }
-      
       this.checkWaveComplete();
     }
   }
@@ -208,13 +194,6 @@ export default class Game {
     const result = player.useAbility(x, y);
     if (result.success) {
       this.broadcastGameState();
-      
-      const winner = this.checkWin();
-      if (winner) {
-        this.endGame('victory', winner);
-        return;
-      }
-      
       this.checkWaveComplete();
     }
   }

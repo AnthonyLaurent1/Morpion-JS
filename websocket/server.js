@@ -61,6 +61,10 @@ io.on('connection', (socket) => {
     gameManager.handlePlaceBlock(socket, x, y);
   });
 
+  socket.on('start_game', () => {
+    gameManager.handleStartGame(socket);
+  });
+
   // Action de destruction de bloc
   socket.on('destroy_block', (data) => {
     const { x, y } = data;

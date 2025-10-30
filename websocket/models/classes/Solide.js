@@ -9,14 +9,11 @@ export default class Solide extends Player {
   constructor(playerId, color, game) {
     super(playerId, color, game);
     this.className = 'solide';
-    this.placeCooldown = 5000; // 2.5s * 2
-    this.destroyCooldown = 5000;
-    this.abilityCooldown = 20000; // 10s * 2
   }
 
   placeBlock(x, y) {
     if (!this.canPlace()) {
-      return { success: false, reason: 'cooldown' };
+      return { success: false, reason: 'not_enough_ap' };
     }
 
     if (x < 0 || x >= 5 || y < 0 || y >= 5) {
@@ -31,8 +28,8 @@ export default class Solide extends Player {
     cell.color = this.color;
     cell.hp = 2; // Blocs avec 2 PV
     cell.playerId = this.playerId;
-    
-    this.lastPlace = Date.now();
+    cell.waveNumber = this.game.waveNumber;
+    this.actionPoints -= 1;
     
     return { success: true };
   }
