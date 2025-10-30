@@ -34,7 +34,7 @@ function loadLeaderboard() {
             <div class="rank-name">${player.pseudo}</div>
             <div class="rank-trophies">
               <span class="trophy-icon">🏆</span>
-              ${player.trophies}
+              ${player.elo}
             </div>
           </div>
         </div>
