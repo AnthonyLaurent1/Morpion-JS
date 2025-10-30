@@ -22,9 +22,11 @@ function loadLeaderboard() {
         `;
         return;
       }
-      
-      // Afficher les 10 meilleurs joueurs
-      leaderboardEl.innerHTML = rankings.map((player, index) => `
+
+      // ✅ Afficher uniquement les 6 premiers joueurs
+      const topPlayers = rankings.slice(0, 6);
+
+      leaderboardEl.innerHTML = topPlayers.map((player, index) => `
         <div class="player-rank">
           <div class="rank-number">${index + 1}</div>
           <div class="rank-info">
@@ -36,6 +38,15 @@ function loadLeaderboard() {
           </div>
         </div>
       `).join('');
+
+      // ✅ Si plus de 6 joueurs existent, activer un scroll doux
+      if (rankings.length > 6) {
+        leaderboardEl.style.maxHeight = '350px';
+        leaderboardEl.style.overflowY = 'auto';
+      } else {
+        leaderboardEl.style.maxHeight = 'none';
+        leaderboardEl.style.overflowY = 'visible';
+      }
     })
     .catch(error => {
       console.error('Erreur lors du chargement du classement:', error);
