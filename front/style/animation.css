@@ -1,0 +1,313 @@
+/* ============================================================================
+   animations.css
+   Définitions CSS pour toutes les animations du jeu
+   ============================================================================ */
+
+/* ==================== DESTRUCTION DE BLOC ==================== */
+
+@keyframes cellDestroy {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+    box-shadow: 0 0 20px currentColor;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+/* ==================== EXPLOSION (BOMBMAN) ==================== */
+
+@keyframes shockwaveExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(15);
+    opacity: 0;
+  }
+}
+
+@keyframes explosionFlash {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.15);
+    filter: brightness(2) saturate(2);
+    box-shadow: 0 0 30px rgba(255, 100, 50, 0.8);
+  }
+}
+
+@keyframes explosionImpact {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.1);
+    filter: brightness(1.5);
+  }
+  100% {
+    transform: scale(0.95);
+    filter: brightness(1);
+  }
+}
+
+/* ==================== SHUFFLE ==================== */
+
+@keyframes shuffleShake {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  10% {
+    transform: translate(-5px, -5px) rotate(-5deg);
+  }
+  20% {
+    transform: translate(5px, 5px) rotate(5deg);
+  }
+  30% {
+    transform: translate(-5px, 5px) rotate(-5deg);
+  }
+  40% {
+    transform: translate(5px, -5px) rotate(5deg);
+  }
+  50% {
+    transform: translate(-5px, -5px) rotate(-5deg);
+  }
+  60% {
+    transform: translate(5px, 5px) rotate(5deg);
+  }
+  70% {
+    transform: translate(-3px, -3px) rotate(-3deg);
+  }
+  80% {
+    transform: translate(3px, 3px) rotate(3deg);
+  }
+  90% {
+    transform: translate(-2px, -2px) rotate(-2deg);
+  }
+}
+
+/* ==================== PARIEUR (DÉ) ==================== */
+
+@keyframes diceRoll {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5) rotate(360deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.5) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes zoneImpact {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  40% {
+    transform: scale(1.15);
+    filter: brightness(1.5) saturate(1.5);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+/* ==================== BOMBWOMAN (LIGNE/COLONNE) ==================== */
+
+@keyframes lineDestroy {
+  0% {
+    transform: scale(1) rotateX(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1) rotateX(180deg);
+    opacity: 0.5;
+    filter: brightness(2);
+  }
+  100% {
+    transform: scale(0.9) rotateX(360deg);
+    opacity: 1;
+  }
+}
+
+@keyframes trailFade {
+  0% {
+    opacity: 1;
+    transform: scaleX(0.5);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1.5);
+  }
+}
+
+/* ==================== ROULETTE (SLOT MACHINE) ==================== */
+
+@keyframes slotMachine {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(-20px);
+    opacity: 0.5;
+  }
+  40% {
+    transform: translateY(-40px);
+    opacity: 0.3;
+  }
+  60% {
+    transform: translateY(-30px);
+    opacity: 0.5;
+  }
+  80% {
+    transform: translateY(-10px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* ==================== EFFETS GÉNÉRAUX ==================== */
+
+/* Animation de placement de bloc */
+@keyframes blockPlace {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Animation de bloc protégé (bouclier) */
+@keyframes shieldPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Animation de coup critique */
+@keyframes criticalHit {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  75% {
+    transform: scale(1.2) rotate(-5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Animation de nouvelle vague */
+@keyframes waveTransition {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ==================== CLASSES UTILITAIRES ==================== */
+
+.particle {
+  will-change: transform, opacity;
+}
+
+.particle-container {
+  will-change: contents;
+}
+
+.shockwave {
+  will-change: transform, opacity;
+}
+
+.no-animation {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Optimisation des performances */
+.cell {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Animation de hover améliorée pour les cellules */
+.cell:hover {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Animation au clic */
+.cell:active {
+  animation: cellClick 0.1s ease-out;
+}
+
+@keyframes cellClick {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
