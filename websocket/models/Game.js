@@ -74,9 +74,9 @@ export default class Game {
       'bombwoman': Classes.Bombwoman,
       'fast': Classes.Fast,
       'solide': Classes.Solide,
-      'roulette': Classes.Roulette,
       'shuffle': Classes.Shuffle,
-      'aleatoire': Classes.Aleatoire
+      'aleatoire': Classes.Aleatoire,
+      'nuke': Classes.Nuke
     };
     return classMap[className.toLowerCase()] || Player;
   }
@@ -370,7 +370,8 @@ export default class Game {
         canDestroy: p.canDestroy(),
         canUseAbility: p.canUseAbility(),
         abilityCharges: p.abilityCharges,
-        currentAbility: p.currentAbility || null
+        currentAbility: p.currentAbility || null,
+        lastChargeWave: p.lastChargeWave || 0
       })),
       started: this.started
     };

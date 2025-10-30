@@ -23,7 +23,7 @@ Classe	Pouvoir	Cooldown / Effet
 💣 Bombwoman	Détruit ligne/colonne, bloque 6s	105s
 ⚡ Le Fast	Tous les blocs passent à 0 PV, cooldown réduit +2	Passif
 🛡️ Le Solide	Blocs à 2 PV, cooldown x2	Passif
-🎰 La Roulette	Pose 2 blocs aléatoires sur une ligne	10s
+
 🔀 Le Shuffle	Mélange toute la grille	155s
 🎲 L'Aléatoire	Pouvoir aléatoire	3 vagues
 

@@ -24,7 +24,7 @@
           <div class="input-section">
             <div class="input-group">
               <label for="pseudo">
-                <span class="label-icon">👤</span>
+                <span class="label-icon"></span>
                 Votre pseudo
               </label>
               <input 
@@ -37,7 +37,7 @@
 
             <div class="input-group">
               <label for="gameId">
-                <span class="label-icon">🎮</span>
+                <span class="label-icon"></span>
                 Code de partie
               </label>
               <input 
@@ -50,7 +50,7 @@
 
           <div class="class-selection">
             <h2>
-              <span class="section-icon">⚔️</span>
+              <span class="section-icon"></span>
               Choisissez votre classe
             </h2>
             <div class="classes-grid">
@@ -89,13 +89,6 @@
                 <span class="cooldown">Passif</span>
               </div>
 
-              <div class="class-card" data-class="roulette">
-                <div class="class-icon">🎰</div>
-                <h3>La Roulette</h3>
-                <p>Pose 2 blocs aléatoires sur une ligne</p>
-                <span class="cooldown">CD : 3 Tours</span>
-              </div>
-
               <div class="class-card" data-class="shuffle">
                 <div class="class-icon">🔀</div>
                 <h3>Le Shuffle</h3>
@@ -109,11 +102,18 @@
                 <p>Pouvoir aléatoire</p>
                 <span class="cooldown">CD : 3 Tours</span>
               </div>
+
+              <div class="class-card" data-class="nuke">
+                <div class="class-icon">☢️</div>
+                <h3>Le Nuke</h3>
+                <p>Détruit toute la grille, place 3 blocs neutres</p>
+                <span class="cooldown">3 Charges</span>
+              </div>
             </div>
           </div>
 
           <button id="joinBtn" class="join-btn" disabled>
-            <span class="btn-icon">🚀</span>
+            <span class="btn-icon"></span>
             Rejoindre la partie
           </button>
           <p class="error-msg" id="errorMsg"></p>

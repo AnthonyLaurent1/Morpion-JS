@@ -2,15 +2,33 @@
   "players": [
     {
       "pseudo": "Matéo",
-      "trophies": 100,
-      "wins": 2,
-      "losses": 0
+      "trophies": 1010,
+      "wins": 7,
+      "losses": 8
     },
     {
       "pseudo": "Elowan",
+      "trophies": 260,
+      "wins": 7,
+      "losses": 7
+    },
+    {
+      "pseudo": "Elo",
       "trophies": 0,
       "wins": 0,
       "losses": 2
+    },
+    {
+      "pseudo": "RedBullFraiseAbricot",
+      "trophies": 50,
+      "wins": 1,
+      "losses": 0
+    },
+    {
+      "pseudo": "Kevin",
+      "trophies": 50,
+      "wins": 1,
+      "losses": 0
     }
   ]
 }

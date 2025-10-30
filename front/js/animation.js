@@ -290,42 +290,6 @@ const AnimationSystem = {
     }, 800);
   },
 
-  /**
-   * Animation pour Roulette (2 blocs aléatoires sur une ligne)
-   */
-  roulette(targetCells) {
-    targetCells.forEach((cell, i) => {
-      setTimeout(() => {
-        cell.style.animation = 'slotMachine 0.6s ease-out';
-        
-        // Effet de "slot machine"
-        const glow = document.createElement('div');
-        const rect = cell.getBoundingClientRect();
-        glow.className = 'slot-glow';
-        
-        glow.style.cssText = `
-          position: fixed;
-          left: ${rect.left}px;
-          top: ${rect.top}px;
-          width: ${rect.width}px;
-          height: ${rect.height}px;
-          background: radial-gradient(circle, rgba(255,215,0,0.6), transparent);
-          pointer-events: none;
-          z-index: 9997;
-          animation: glowPulse 0.6s ease-out;
-        `;
-        
-        document.body.appendChild(glow);
-        setTimeout(() => glow.remove(), 600);
-      }, i * 200);
-    });
-
-    setTimeout(() => {
-      targetCells.forEach(cell => {
-        cell.style.animation = '';
-      });
-    }, 1000);
-  }
 };
 
 // ==================== EXPORT ====================
