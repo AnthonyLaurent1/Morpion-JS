@@ -188,6 +188,28 @@ h1 {
   transform: translateY(-2px);
 }
 
+
+.start-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--success);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-bottom: 10px;
+}
+
+.start-btn:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+
+
 @media (max-width: 768px) {
   .container {
     padding: 25px;
