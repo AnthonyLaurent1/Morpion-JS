@@ -2,33 +2,19 @@
   "players": [
     {
       "pseudo": "Matéo",
-      "trophies": 1010,
-      "wins": 7,
-      "losses": 8
+      "elo": 1010,
+      "wins": 6,
+      "losses": 4,
+      "gamesPlayed": 10,
+      "lastEloChange": 10
     },
     {
       "pseudo": "Elowan",
-      "trophies": 260,
-      "wins": 7,
-      "losses": 7
-    },
-    {
-      "pseudo": "Elo",
-      "trophies": 0,
-      "wins": 0,
-      "losses": 2
-    },
-    {
-      "pseudo": "RedBullFraiseAbricot",
-      "trophies": 50,
-      "wins": 1,
-      "losses": 0
-    },
-    {
-      "pseudo": "Kevin",
-      "trophies": 50,
-      "wins": 1,
-      "losses": 0
+      "elo": 990,
+      "wins": 4,
+      "losses": 6,
+      "gamesPlayed": 10,
+      "lastEloChange": -10
     }
   ]
 }

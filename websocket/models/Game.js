@@ -327,7 +327,17 @@ export default class Game {
       }
     }
 
-    // Envoyer les résultats de la partie, y compris les changements de trophées
+    // Récupérer les classements actuels
+    const rankings = RankingManager.getRankings();
+    const getPlayerInfo = (pseudo) => {
+      const player = rankings.find(p => p.pseudo === pseudo);
+      return {
+        elo: player ? player.elo : 1000,
+        eloChange: player ? player.lastEloChange : 0
+      };
+    };
+
+    // Envoyer les résultats de la partie avec les ELOs
     this.io.to(`game_${this.gameId}`).emit('game_over', {
       reason,
       winner: winner ? {
@@ -335,14 +345,14 @@ export default class Game {
         color: winner.color,
         class: winner.className,
         pseudo: winner.pseudo,
-        trophyChange: 50 // Le gagnant gagne 50 trophées
+        ...getPlayerInfo(winner.pseudo)
       } : null,
       otherPlayers: winner ? this.players
         .filter(p => p.playerId !== winner.playerId)
         .map(p => ({
           id: p.playerId,
           pseudo: p.pseudo,
-          trophyChange: -30 // Les perdants perdent 30 trophées
+          ...getPlayerInfo(p.pseudo)
         })) : []
     });
 
