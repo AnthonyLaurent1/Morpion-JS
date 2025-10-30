@@ -41,6 +41,7 @@ const startGameBtn = document.getElementById('startGameBtn');
 // État local
 let currentGameId = null;
 let myPlayerId = null;
+let playerRankings = new Map(); // Map pour stocker les trophées par pseudo
 
 // Classes avec leurs icônes
 const classIcons = {
@@ -71,7 +72,7 @@ socket.emit('join_game', {
   pseudo: playerPseudo
 });
 
-// Succès de la connexion
+  // Succès de la connexion
 socket.on('join_success', (data) => {
   currentGameId = data.gameId;
   myPlayerId = data.playerId;
@@ -80,11 +81,24 @@ socket.on('join_success', (data) => {
   sessionStorage.setItem('gameId', data.gameId);
   
   gameCodeEl.textContent = data.gameId;
+
+  // Récupérer les classements pour obtenir les trophées
+  fetch(`${SERVER_URL}/api/leaderboard`)
+    .then(response => response.json())
+    .then(response => {
+      if (response.success) {
+        playerRankings = new Map(response.data.map(player => [player.pseudo, player.trophies]));
+        // Mettre à jour la liste des joueurs avec les nouveaux trophées
+        const gameState = socket.volatile.gameState;
+        if (gameState && gameState.players) {
+          updatePlayersList(gameState.players);
+        }
+      }
+    })
+    .catch(error => console.error('Erreur lors de la récupération des classements:', error));
   
   console.log('Connexion réussie:', data);
-});
-
-// Erreur de connexion
+});// Erreur de connexion
 socket.on('join_error', (data) => {
   alert(data.message);
   window.location.href = './index.html';
@@ -158,8 +172,24 @@ function updatePlayersList(players) {
     classP.className = 'player-class';
     classP.textContent = `${classIcons[player.class]} ${classNames[player.class]}`;
     
+    const trophiesDiv = document.createElement('div');
+    trophiesDiv.className = 'player-trophies';
+    
+    const trophyIcon = document.createElement('span');
+    trophyIcon.className = 'trophy-icon';
+    trophyIcon.textContent = '🏆';
+    
+    const trophyCount = document.createElement('span');
+    trophyCount.className = 'trophy-count';
+    const trophies = playerRankings.get(player.pseudo) || 0;
+    trophyCount.textContent = trophies;
+    
+    trophiesDiv.appendChild(trophyIcon);
+    trophiesDiv.appendChild(trophyCount);
+    
     infoDiv.appendChild(nameP);
     infoDiv.appendChild(classP);
+    infoDiv.appendChild(trophiesDiv);
     
     card.appendChild(colorDiv);
     card.appendChild(infoDiv);
