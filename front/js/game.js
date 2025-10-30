@@ -42,6 +42,7 @@ socket.on('connect', () => {
   socket.emit('join_game', {
     gameId: gameId ? parseInt(gameId) : null,
     playerClass: playerClass,
+
     pseudo: playerPseudo || sessionStorage.getItem('playerPseudo') || 'Joueur' + Math.floor(Math.random() * 9999)
   });
 });
