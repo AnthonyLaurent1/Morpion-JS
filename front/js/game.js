@@ -221,35 +221,74 @@ function handleCellClick(e) {
       break;
     case 'ability':
       socket.emit('use_ability', { x: row, y: col });
-      showAbilityAnimation(playerClass);
+      showAbilityAnimation(playerClass, row, col);
       break;
   }
 }
 
-function showAbilityAnimation(className) {
-  const passiveClasses = ['fast', 'solide'];
-  if (passiveClasses.includes(className)) return;
+function showAbilityAnimation(className, x, y) {
+  const cells = boardEl.querySelectorAll('.cell');
+  const targetCell = cells[x * 5 + y];
   
-  const overlay = document.createElement('div');
-  overlay.className = 'ability-animation';
-  
-  const icons = {
-    'bombman': '💣',
-    'bombwoman': '💥',
-    'parieur': '🎲',
-    'roulette': '🎰',
-    'shuffle': '🔀',
-    'aleatoire': '🎲'
-  };
-  
-  overlay.textContent = icons[className] || '⚡';
-  document.body.appendChild(overlay);
-  
-  setTimeout(() => overlay.classList.add('show'), 10);
-  setTimeout(() => {
-    overlay.classList.remove('show');
-    setTimeout(() => overlay.remove(), 300);
-  }, 800);
+  switch (className) {
+    case 'bombman':
+      // Obtenir les cellules affectées (croix)
+      const bombmanCells = [];
+      const directions = [[-1,0], [1,0], [0,-1], [0,1]];
+      directions.forEach(([dx, dy]) => {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx >= 0 && nx < 5 && ny >= 0 && ny < 5) {
+          bombmanCells.push(cells[nx * 5 + ny]);
+        }
+      });
+      AnimationSystem.explosion(targetCell, bombmanCells);
+      break;
+      
+    case 'bombwoman':
+      // Ligne ou colonne
+      const bombwomanCells = [];
+      for (let i = 0; i < 5; i++) {
+        bombwomanCells.push(cells[x * 5 + i]); // Ligne
+      }
+      AnimationSystem.bombwoman(bombwomanCells, true);
+      break;
+      
+    case 'parieur':
+      // Zone 3x3
+      const parieurCells = [];
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx >= 0 && nx < 5 && ny >= 0 && ny < 5) {
+            parieurCells.push(cells[nx * 5 + ny]);
+          }
+        }
+      }
+      AnimationSystem.parieur(targetCell, parieurCells);
+      break;
+      
+    case 'roulette':
+      // 2 cellules sur une ligne
+      const rouletteCells = [];
+      for (let i = 0; i < 5; i++) {
+        if (Math.random() < 0.4) { // Simuler les 2 cellules
+          rouletteCells.push(cells[x * 5 + i]);
+        }
+      }
+      AnimationSystem.roulette(rouletteCells);
+      break;
+      
+    case 'shuffle':
+      AnimationSystem.shuffle(Array.from(cells));
+      break;
+      
+    case 'aleatoire':
+      // Animation générique
+      AnimationSystem.explosion(targetCell, []);
+      break;
+  }
 }
 
 function showNotification(message) {
@@ -276,6 +315,11 @@ function updateBoard(grid) {
       const wasOccupied = cellEl.classList.contains('occupied');
       const previousColor = cellEl.style.backgroundColor;
       
+      // Si un bloc était présent et est maintenant détruit
+      if (wasOccupied && previousColor && !cell.color) {
+        AnimationSystem.destroyBlock(cellEl, previousColor);
+      }
+      
       cellEl.className = 'cell';
       cellEl.style.backgroundColor = '';
       cellEl.textContent = '';
@@ -284,6 +328,12 @@ function updateBoard(grid) {
         cellEl.style.backgroundColor = cell.color;
         cellEl.classList.add('occupied');
         
+        // Animation de placement (optionnel)
+        if (!wasOccupied) {
+          cellEl.style.animation = 'blockPlace 0.3s ease-out';
+        }
+        
+        // HP et protection
         if (cell.hp > 1) {
           cellEl.classList.add('hp-2');
         }
@@ -293,11 +343,9 @@ function updateBoard(grid) {
           const shield = document.createElement('span');
           shield.className = 'shield-icon';
           shield.textContent = '🛡️';
+          shield.style.animation = 'shieldPulse 2s infinite';
           cellEl.appendChild(shield);
         }
-      } else if (wasOccupied && previousColor && previousColor !== cell.color) {
-        cellEl.classList.add('destroyed');
-        setTimeout(() => cellEl.classList.remove('destroyed'), 500);
       }
     });
   });
@@ -515,3 +563,25 @@ window.addEventListener('beforeunload', () => {
 
 // Initialiser
 init();
+
+let animationsEnabled = true;
+
+function toggleAnimations() {
+  animationsEnabled = !animationsEnabled;
+  if (!animationsEnabled) {
+    document.body.classList.add('no-animation');
+  } else {
+    document.body.classList.remove('no-animation');
+  }
+}
+
+// Modifier les appels
+if (animationsEnabled) {
+  AnimationSystem.destroyBlock(cellEl, previousColor);
+}
+
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+if (isMobile) {
+  AnimationSystem.config.particleCount = 6;
+  AnimationSystem.config.particleLifetime = 400;
+}
